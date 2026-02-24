@@ -1,13 +1,14 @@
 import { Link, useLocation } from "react-router-dom";
 import { 
-  LayoutDashboard, Users, Gift, Mail, FileText, Handshake, Settings, Home, Briefcase
+  LayoutDashboard, Users, Home, Briefcase, Mail, FileText, Handshake, Settings, Receipt, DollarSign
 } from "lucide-react";
 import { cn } from "@/lib/utils";
 
 const navItems = [
   { icon: LayoutDashboard, label: "Dashboard", path: "/" },
+  { icon: Receipt, label: "Transactions", path: "/transactions" },
+  { icon: DollarSign, label: "HomeDollars", path: "/rewards" },
   { icon: Users, label: "Members", path: "/members" },
-  { icon: Gift, label: "Rewards", path: "/rewards" },
   { icon: Briefcase, label: "Job Board", path: "/jobs" },
   { icon: Mail, label: "Emails", path: "/emails" },
   { icon: FileText, label: "Content", path: "/content" },
@@ -23,7 +24,7 @@ const AppSidebar = () => {
       <div className="flex h-16 items-center gap-2 border-b border-sidebar-border px-6">
         <Home className="h-6 w-6 text-sidebar-primary" />
         <span className="font-heading text-xl font-bold text-sidebar-primary">
-          SavMoney
+          HomeDollars
         </span>
       </div>
 
@@ -49,7 +50,7 @@ const AppSidebar = () => {
       </nav>
 
       <div className="border-t border-sidebar-border p-4">
-        <p className="text-xs text-sidebar-foreground/50">© 2026 SavMoney.com</p>
+        <p className="text-xs text-sidebar-foreground/50">© 2026 HomeDollars.com</p>
       </div>
     </aside>
   );

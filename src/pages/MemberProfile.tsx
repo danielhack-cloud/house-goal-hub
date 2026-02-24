@@ -6,7 +6,7 @@ import { Separator } from "@/components/ui/separator";
 import { Progress } from "@/components/ui/progress";
 import {
   MapPin, Briefcase, GraduationCap, Calendar, Mail, Phone, Globe,
-  Linkedin, Award, Star, TrendingUp, Edit, Share2, Gift, Home,
+  Linkedin, Award, TrendingUp, Edit, Share2, DollarSign, Home, ShoppingCart,
 } from "lucide-react";
 
 const MemberProfile = () => {
@@ -19,12 +19,14 @@ const MemberProfile = () => {
     website: "sarahjohnson.com",
     linkedin: "linkedin.com/in/sarahjohnson",
     joined: "January 2025",
-    tier: "Gold",
-    points: 2450,
-    nextTier: 5000,
-    cashBackEarned: "$1,240",
-    savingsGoal: "$45,000",
-    currentSavings: "$18,500",
+    tier: "Builder",
+    homeDollars: 2847,
+    lifetimeSpending: 2847,
+    nextTierMin: 5000,
+    nextTierName: "Foundation",
+    savingsGoal: 45000,
+    currentSavings: 2847,
+    homeBuyingTimeline: "12 – 18 months",
     bio: "Passionate about smart spending and building wealth through everyday purchases. Working toward my dream of owning a home in the Austin area. I love sharing savings tips with my community and helping others reach their financial goals.",
     currentJob: {
       title: "Marketing Director",
@@ -43,10 +45,10 @@ const MemberProfile = () => {
     skills: ["Digital Marketing", "SEO", "Content Strategy", "Analytics", "Budget Planning", "Real Estate Research"],
     interests: ["Home Buying", "Personal Finance", "Cooking", "Hiking", "Travel"],
     recentActivity: [
-      { action: "Earned 150 pts from Whole Foods purchase", date: "Feb 22, 2026" },
-      { action: "Redeemed $25 cashback to savings", date: "Feb 20, 2026" },
-      { action: "Referred Marcus Chen – earned 500 pts", date: "Feb 18, 2026" },
-      { action: "Completed financial wellness quiz", date: "Feb 15, 2026" },
+      { action: "Earned 87 HD from Amazon purchase ($87.42)", date: "Feb 22, 2026" },
+      { action: "Submitted receipt — 135 HD pending verification", date: "Feb 20, 2026" },
+      { action: "Earned 52 HD from Amazon purchase ($52.30)", date: "Feb 18, 2026" },
+      { action: "Referred Marcus Chen – earned 500 bonus HD", date: "Feb 15, 2026" },
     ],
     customFields: {
       "Preferred Shopping Categories": "Groceries, Gas, Home Improvement",
@@ -60,8 +62,8 @@ const MemberProfile = () => {
     },
   };
 
-  const savingsPercent = (18500 / 45000) * 100;
-  const tierPercent = (member.points / member.nextTier) * 100;
+  const savingsPercent = (member.currentSavings / member.savingsGoal) * 100;
+  const tierPercent = ((member.homeDollars - 1000) / (member.nextTierMin - 1000)) * 100;
 
   return (
     <DashboardLayout>
@@ -80,7 +82,6 @@ const MemberProfile = () => {
             </div>
           </div>
         </div>
-        {/* Avatar */}
         <div className="absolute -bottom-14 left-8 z-20 flex h-28 w-28 items-center justify-center rounded-full border-4 border-card bg-accent text-accent-foreground shadow-lg">
           <span className="font-heading text-3xl font-bold">SJ</span>
         </div>
@@ -89,14 +90,13 @@ const MemberProfile = () => {
       <div className="grid gap-6 lg:grid-cols-3">
         {/* Left Column */}
         <div className="space-y-6 lg:col-span-2">
-          {/* Header Info */}
           <Card className="p-6">
             <h1 className="font-heading text-2xl font-bold">{member.name}</h1>
             <p className="mt-1 text-muted-foreground">{member.headline}</p>
             <div className="mt-3 flex flex-wrap items-center gap-4 text-sm text-muted-foreground">
               <span className="flex items-center gap-1"><MapPin className="h-3.5 w-3.5" />{member.location}</span>
               <span className="flex items-center gap-1"><Calendar className="h-3.5 w-3.5" />Joined {member.joined}</span>
-              <Badge variant="default">{member.tier} Member</Badge>
+              <Badge variant="default">{member.tier} Tier</Badge>
             </div>
             <p className="mt-4 text-sm leading-relaxed text-foreground/80">{member.bio}</p>
             <div className="mt-4 flex flex-wrap gap-3 text-sm text-muted-foreground">
@@ -178,43 +178,50 @@ const MemberProfile = () => {
 
         {/* Right Column */}
         <div className="space-y-6">
-          {/* Points & Tier */}
+          {/* HomeDollars & Tier */}
           <Card className="p-6">
             <h2 className="mb-3 flex items-center gap-2 font-heading text-lg font-semibold">
-              <Gift className="h-5 w-5 text-accent" /> Rewards
+              <DollarSign className="h-5 w-5 text-accent" /> HomeDollars
             </h2>
             <div className="text-center">
-              <p className="font-heading text-4xl font-bold text-primary">{member.points.toLocaleString()}</p>
-              <p className="text-sm text-muted-foreground">Reward Points</p>
+              <p className="font-heading text-4xl font-bold text-primary">HD {member.homeDollars.toLocaleString()}</p>
+              <p className="text-sm text-muted-foreground">Lifetime Earned</p>
             </div>
             <div className="mt-4">
               <div className="mb-1 flex justify-between text-xs text-muted-foreground">
                 <span>{member.tier}</span>
-                <span>Platinum</span>
+                <span>{member.nextTierName}</span>
               </div>
               <Progress value={tierPercent} />
               <p className="mt-1 text-xs text-muted-foreground text-center">
-                {(member.nextTier - member.points).toLocaleString()} pts to Platinum
+                {(member.nextTierMin - member.homeDollars).toLocaleString()} HD to {member.nextTierName}
               </p>
             </div>
             <Separator className="my-4" />
             <div className="flex justify-between text-sm">
-              <span className="text-muted-foreground">Cash Back Earned</span>
-              <span className="font-semibold">{member.cashBackEarned}</span>
+              <span className="flex items-center gap-1 text-muted-foreground">
+                <ShoppingCart className="h-3.5 w-3.5" /> Lifetime Spending
+              </span>
+              <span className="font-semibold">${member.lifetimeSpending.toLocaleString()}</span>
             </div>
           </Card>
 
-          {/* Savings Goal */}
+          {/* Home Savings Goal */}
           <Card className="p-6">
             <h2 className="mb-3 flex items-center gap-2 font-heading text-lg font-semibold">
-              <Home className="h-5 w-5 text-success" /> Savings Goal
+              <Home className="h-5 w-5 text-primary" /> Home Savings Goal
             </h2>
             <div className="text-center">
-              <p className="font-heading text-2xl font-bold">{member.currentSavings}</p>
-              <p className="text-sm text-muted-foreground">of {member.savingsGoal} goal</p>
+              <p className="font-heading text-2xl font-bold">HD {member.currentSavings.toLocaleString()}</p>
+              <p className="text-sm text-muted-foreground">of HD {member.savingsGoal.toLocaleString()} goal</p>
             </div>
             <Progress className="mt-3" value={savingsPercent} />
-            <p className="mt-1 text-center text-xs text-muted-foreground">{Math.round(savingsPercent)}% complete</p>
+            <p className="mt-1 text-center text-xs text-muted-foreground">{savingsPercent.toFixed(1)}% complete</p>
+            <Separator className="my-4" />
+            <div className="flex justify-between text-sm">
+              <span className="text-muted-foreground">Timeline</span>
+              <span className="font-semibold">{member.homeBuyingTimeline}</span>
+            </div>
           </Card>
 
           {/* Recent Activity */}

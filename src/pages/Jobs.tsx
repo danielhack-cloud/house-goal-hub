@@ -55,7 +55,7 @@ const jobs = [
   },
   {
     title: "Digital Marketing Manager",
-    company: "SavMoney.com",
+    company: "HomeDollars.com",
     location: "Austin, TX · Hybrid",
     type: "Full-time",
     salary: "$80K – $105K",
@@ -105,7 +105,7 @@ const Jobs = () => {
       <div className="mb-8">
         <h1 className="font-heading text-3xl font-bold">Job Board</h1>
         <p className="mt-1 text-muted-foreground">
-          Career opportunities from SavMoney partners and the homeownership community
+          Career opportunities from HomeDollars partners and the homeownership community
         </p>
       </div>
 

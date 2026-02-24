@@ -7,6 +7,7 @@ import Index from "./pages/Index";
 import Members from "./pages/Members";
 import MemberProfile from "./pages/MemberProfile";
 import Rewards from "./pages/Rewards";
+import Transactions from "./pages/Transactions";
 import Jobs from "./pages/Jobs";
 import NotFound from "./pages/NotFound";
 
@@ -20,6 +21,7 @@ const App = () => (
       <BrowserRouter>
         <Routes>
           <Route path="/" element={<Index />} />
+          <Route path="/transactions" element={<Transactions />} />
           <Route path="/members" element={<Members />} />
           <Route path="/members/:id" element={<MemberProfile />} />
           <Route path="/rewards" element={<Rewards />} />
