@@ -1,8 +1,10 @@
-import { Link, useLocation } from "react-router-dom";
+import { Link, useLocation, useNavigate } from "react-router-dom";
 import { 
-  LayoutDashboard, Users, Home, Briefcase, Mail, Handshake, Settings, Receipt, DollarSign, Activity, UserCircle
+  LayoutDashboard, Users, Home, Briefcase, Mail, Handshake, Settings, Receipt, DollarSign, Activity, UserCircle, LogIn, LogOut
 } from "lucide-react";
 import { cn } from "@/lib/utils";
+import { useAuth } from "@/contexts/AuthContext";
+import { Button } from "@/components/ui/button";
 
 const navItems = [
   { icon: LayoutDashboard, label: "Dashboard", path: "/" },
@@ -19,6 +21,8 @@ const navItems = [
 
 const AppSidebar = () => {
   const location = useLocation();
+  const navigate = useNavigate();
+  const { user, signOut } = useAuth();
 
   return (
     <aside className="fixed left-0 top-0 z-40 flex h-screen w-64 flex-col bg-sidebar text-sidebar-foreground">
@@ -50,7 +54,29 @@ const AppSidebar = () => {
         })}
       </nav>
 
-      <div className="border-t border-sidebar-border p-4">
+      <div className="border-t border-sidebar-border p-4 space-y-3">
+        {user ? (
+          <div className="space-y-2">
+            <p className="truncate text-xs font-medium text-sidebar-foreground/70">{user.email}</p>
+            <Button
+              variant="ghost"
+              size="sm"
+              className="w-full justify-start gap-2 text-sidebar-foreground/70 hover:text-sidebar-foreground"
+              onClick={async () => { await signOut(); navigate("/auth"); }}
+            >
+              <LogOut className="h-4 w-4" /> Sign Out
+            </Button>
+          </div>
+        ) : (
+          <Button
+            variant="ghost"
+            size="sm"
+            className="w-full justify-start gap-2 text-sidebar-foreground/70 hover:text-sidebar-foreground"
+            onClick={() => navigate("/auth")}
+          >
+            <LogIn className="h-4 w-4" /> Sign In
+          </Button>
+        )}
         <p className="text-xs text-sidebar-foreground/50">© 2026 HomeDollars.com</p>
       </div>
     </aside>
