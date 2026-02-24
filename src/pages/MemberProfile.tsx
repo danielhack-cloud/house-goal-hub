@@ -11,10 +11,11 @@ import {
 
 const MemberProfile = () => {
   const member = {
-    name: "Sarah Johnson",
-    headline: "Marketing Director | Aspiring Homeowner",
+    name: "Jack Thompson",
+    headline: "Product Manager | Aspiring Homeowner",
     location: "Austin, TX",
-    email: "sarah.johnson@email.com",
+    email: "jack@test.com",
+    avatar: "/images/headshot-jack.jpeg",
     phone: "(512) 555-0147",
     website: "sarahjohnson.com",
     linkedin: "linkedin.com/in/sarahjohnson",
@@ -82,8 +83,8 @@ const MemberProfile = () => {
             </div>
           </div>
         </div>
-        <div className="absolute -bottom-14 left-8 z-20 flex h-28 w-28 items-center justify-center rounded-full border-4 border-card bg-accent text-accent-foreground shadow-lg">
-          <span className="font-heading text-3xl font-bold">SJ</span>
+        <div className="absolute -bottom-14 left-8 z-20 h-28 w-28 overflow-hidden rounded-full border-4 border-card shadow-lg">
+          <img src={member.avatar} alt={member.name} className="h-full w-full object-cover" />
         </div>
       </div>
 
