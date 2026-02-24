@@ -61,7 +61,7 @@ const Members = () => {
               <TableHead>Name</TableHead>
               <TableHead>Email</TableHead>
               <TableHead>Tier</TableHead>
-              <TableHead>Points</TableHead>
+              <TableHead>HomeDollars</TableHead>
               <TableHead>Status</TableHead>
               <TableHead>Joined</TableHead>
             </TableRow>
