@@ -9,6 +9,7 @@ import MemberProfile from "./pages/MemberProfile";
 import Rewards from "./pages/Rewards";
 import Transactions from "./pages/Transactions";
 import Jobs from "./pages/Jobs";
+import LiveFeed from "./pages/LiveFeed";
 import NotFound from "./pages/NotFound";
 
 const queryClient = new QueryClient();
@@ -25,6 +26,7 @@ const App = () => (
           <Route path="/members" element={<Members />} />
           <Route path="/members/:id" element={<MemberProfile />} />
           <Route path="/rewards" element={<Rewards />} />
+          <Route path="/feed" element={<LiveFeed />} />
           <Route path="/jobs" element={<Jobs />} />
           <Route path="*" element={<NotFound />} />
         </Routes>
