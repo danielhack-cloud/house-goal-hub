@@ -7,7 +7,7 @@ import { useAuth } from "@/contexts/AuthContext";
 import { Button } from "@/components/ui/button";
 
 const navItems = [
-  { icon: LayoutDashboard, label: "Dashboard", path: "/" },
+  { icon: LayoutDashboard, label: "Dashboard", path: "/dashboard" },
   { icon: Receipt, label: "Transactions", path: "/transactions" },
   { icon: DollarSign, label: "HomeDollars", path: "/rewards" },
   { icon: Activity, label: "Live Feed", path: "/feed" },
