@@ -75,21 +75,20 @@ const Landing = () => {
             <span className="font-heading text-xl font-bold text-primary">HomeDollars</span>
           </div>
           <div className="flex items-center gap-3">
-            {user ? (
-              <Button asChild>
+            {user && (
+              <Button variant="outline" asChild>
                 <Link to="/dashboard">
-                  Go to Dashboard <ArrowRight className="ml-2 h-4 w-4" />
+                  Dashboard <ArrowRight className="ml-2 h-4 w-4" />
                 </Link>
               </Button>
-            ) : (
-              <>
-                <Button variant="ghost" asChild>
-                  <Link to="/auth">Sign In</Link>
-                </Button>
-                <Button asChild>
-                  <Link to="/auth">Get Started</Link>
-                </Button>
-              </>
+            )}
+            <Button variant="ghost" asChild>
+              <Link to="/auth">{user ? "Account" : "Sign In"}</Link>
+            </Button>
+            {!user && (
+              <Button asChild>
+                <Link to="/auth">Get Started</Link>
+              </Button>
             )}
           </div>
         </div>
@@ -116,23 +115,20 @@ const Landing = () => {
             that count toward buying your first home. It's that simple.
           </p>
           <div className="mt-10 flex flex-col items-center gap-4 sm:flex-row sm:justify-center">
-            {user ? (
-              <Button size="lg" asChild>
+            <Button size="lg" asChild>
+              <Link to="/auth">
+                Create Free Account <ArrowRight className="ml-2 h-4 w-4" />
+              </Link>
+            </Button>
+            <Button size="lg" variant="outline" asChild>
+              <a href="#waitlist">Join Waiting List</a>
+            </Button>
+            {user && (
+              <Button size="lg" variant="secondary" asChild>
                 <Link to="/dashboard">
                   Open Dashboard <ArrowRight className="ml-2 h-4 w-4" />
                 </Link>
               </Button>
-            ) : (
-              <>
-                <Button size="lg" asChild>
-                  <Link to="/auth">
-                    Create Free Account <ArrowRight className="ml-2 h-4 w-4" />
-                  </Link>
-                </Button>
-                <Button size="lg" variant="outline" asChild>
-                  <a href="#waitlist">Join Waiting List</a>
-                </Button>
-              </>
             )}
           </div>
         </div>
