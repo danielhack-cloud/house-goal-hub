@@ -94,17 +94,21 @@ const Landing = () => {
 
       {/* Hero */}
       <section className="relative overflow-hidden">
-        <div className="absolute inset-0 bg-gradient-to-br from-primary/5 via-transparent to-secondary/10" />
+        <div
+          className="absolute inset-0 bg-cover bg-center"
+          style={{ backgroundImage: "url('/images/hero-home.webp')" }}
+        />
+        <div className="absolute inset-0 bg-foreground/60" />
         <div className="relative mx-auto max-w-6xl px-6 py-24 text-center lg:py-36">
-          <div className="mb-6 inline-flex items-center gap-2 rounded-full border border-secondary/40 bg-secondary/10 px-4 py-1.5 text-sm font-medium text-foreground">
+          <div className="mb-6 inline-flex items-center gap-2 rounded-full border border-secondary/40 bg-secondary/20 px-4 py-1.5 text-sm font-medium text-primary-foreground">
             <Sparkles className="h-4 w-4 text-secondary" />
             Launching Early 2026
           </div>
-          <h1 className="mx-auto max-w-3xl font-heading text-4xl font-bold leading-tight text-foreground sm:text-5xl lg:text-6xl">
+          <h1 className="mx-auto max-w-3xl font-heading text-4xl font-bold leading-tight text-primary-foreground sm:text-5xl lg:text-6xl">
             Turn Your Everyday Shopping Into a{" "}
-            <span className="text-primary">Down Payment</span>
+            <span className="text-secondary">Down Payment</span>
           </h1>
-          <p className="mx-auto mt-6 max-w-2xl text-lg text-muted-foreground">
+          <p className="mx-auto mt-6 max-w-2xl text-lg text-primary-foreground/80">
             Shop on Amazon like you normally do. Every dollar you spend earns HomeDollars
             that count toward buying your first home. It's that simple.
           </p>
