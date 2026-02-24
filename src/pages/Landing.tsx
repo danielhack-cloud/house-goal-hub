@@ -14,9 +14,6 @@ import {
   ArrowRight,
   CheckCircle2,
   Sparkles,
-  Users,
-  TrendingUp,
-  Star,
 } from "lucide-react";
 
 const Landing = () => {
@@ -169,26 +166,6 @@ const Landing = () => {
         </div>
       </section>
 
-      {/* Social Proof Stats */}
-      <section className="border-t border-border bg-background py-16">
-        <div className="mx-auto max-w-6xl px-6">
-          <div className="grid grid-cols-2 gap-8 md:grid-cols-4">
-            {[
-              { value: "12,400+", label: "Members Earning", icon: Users },
-              { value: "$1.2M", label: "HomeDollars Earned", icon: TrendingUp },
-              { value: "48,000+", label: "Receipts Uploaded", icon: Receipt },
-              { value: "4.9 ★", label: "Member Rating", icon: Star },
-            ].map((stat) => (
-              <div key={stat.label} className="text-center">
-                <stat.icon className="mx-auto mb-2 h-6 w-6 text-primary" />
-                <p className="font-heading text-3xl font-bold text-foreground">{stat.value}</p>
-                <p className="mt-1 text-sm text-muted-foreground">{stat.label}</p>
-              </div>
-            ))}
-          </div>
-        </div>
-      </section>
-
       {/* Dashboard Showcase */}
       <section className="border-t border-border bg-card py-24">
         <div className="mx-auto max-w-6xl px-6">
@@ -249,56 +226,6 @@ const Landing = () => {
         </div>
       </section>
 
-      {/* Testimonials */}
-      <section className="border-t border-border bg-background py-24">
-        <div className="mx-auto max-w-6xl px-6">
-          <h2 className="text-center font-heading text-3xl font-bold text-foreground sm:text-4xl">
-            What Members Are Saying
-          </h2>
-          <div className="mt-12 grid gap-8 md:grid-cols-3">
-            {[
-              {
-                name: "Sarah M.",
-                location: "Austin, TX",
-                quote: "I've earned over 4,200 HomeDollars just from my normal Amazon shopping. I never thought saving for a home could be this easy!",
-                hd: "HD 4,200",
-              },
-              {
-                name: "Marcus J.",
-                location: "Atlanta, GA",
-                quote: "The receipt upload feature is genius. I was already spending this money — now it's working toward my down payment.",
-                hd: "HD 6,850",
-              },
-              {
-                name: "Emily & David R.",
-                location: "Denver, CO",
-                quote: "Between the two of us, we're earning double the HomeDollars. At this rate we'll hit our goal by next year.",
-                hd: "HD 11,300",
-              },
-            ].map((t) => (
-              <Card key={t.name} className="p-6">
-                <div className="mb-4 flex gap-1">
-                  {[...Array(5)].map((_, i) => (
-                    <Star key={i} className="h-4 w-4 fill-secondary text-secondary" />
-                  ))}
-                </div>
-                <p className="text-sm leading-relaxed text-muted-foreground">"{t.quote}"</p>
-                <div className="mt-4 flex items-center justify-between">
-                  <div>
-                    <p className="font-heading text-sm font-semibold text-card-foreground">{t.name}</p>
-                    <p className="text-xs text-muted-foreground">{t.location}</p>
-                  </div>
-                  <span className="rounded-full bg-primary/10 px-3 py-1 text-xs font-semibold text-primary">
-                    {t.hd}
-                  </span>
-                </div>
-              </Card>
-            ))}
-          </div>
-        </div>
-      </section>
-
-      {/* Waitlist */}
       <section id="waitlist" className="border-t border-border py-24">
         <div className="mx-auto max-w-xl px-6 text-center">
           <h2 className="font-heading text-3xl font-bold text-foreground sm:text-4xl">
