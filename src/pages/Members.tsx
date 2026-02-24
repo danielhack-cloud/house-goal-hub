@@ -1,3 +1,4 @@
+import { useNavigate } from "react-router-dom";
 import DashboardLayout from "@/components/DashboardLayout";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -26,6 +27,7 @@ const tierColors: Record<string, string> = {
 };
 
 const Members = () => {
+  const navigate = useNavigate();
   return (
     <DashboardLayout>
       <div className="mb-8 flex items-center justify-between">
@@ -65,8 +67,8 @@ const Members = () => {
             </TableRow>
           </TableHeader>
           <TableBody>
-            {members.map((member) => (
-              <TableRow key={member.email} className="cursor-pointer hover:bg-muted/50">
+            {members.map((member, i) => (
+              <TableRow key={member.email} className="cursor-pointer hover:bg-muted/50" onClick={() => navigate(`/members/${i + 1}`)}>
                 <TableCell className="font-medium">{member.name}</TableCell>
                 <TableCell className="text-muted-foreground">{member.email}</TableCell>
                 <TableCell>
