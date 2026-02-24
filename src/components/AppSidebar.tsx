@@ -1,6 +1,6 @@
 import { Link, useLocation } from "react-router-dom";
 import { 
-  LayoutDashboard, Users, Gift, Mail, FileText, Handshake, Settings, Home
+  LayoutDashboard, Users, Gift, Mail, FileText, Handshake, Settings, Home, Briefcase
 } from "lucide-react";
 import { cn } from "@/lib/utils";
 
@@ -8,6 +8,7 @@ const navItems = [
   { icon: LayoutDashboard, label: "Dashboard", path: "/" },
   { icon: Users, label: "Members", path: "/members" },
   { icon: Gift, label: "Rewards", path: "/rewards" },
+  { icon: Briefcase, label: "Job Board", path: "/jobs" },
   { icon: Mail, label: "Emails", path: "/emails" },
   { icon: FileText, label: "Content", path: "/content" },
   { icon: Handshake, label: "Partners", path: "/partners" },
