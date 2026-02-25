@@ -12,7 +12,10 @@ import {
 import {
   Select, SelectContent, SelectItem, SelectTrigger, SelectValue,
 } from "@/components/ui/select";
-import { ShoppingCart, Upload, ExternalLink, CheckCircle, Clock, AlertCircle, Loader2, Sparkles } from "lucide-react";
+import { ShoppingCart, Upload, ExternalLink, CheckCircle, Clock, AlertCircle, Loader2, Sparkles, PartyPopper } from "lucide-react";
+import {
+  Dialog, DialogContent, DialogHeader, DialogTitle, DialogDescription,
+} from "@/components/ui/dialog";
 import { supabase } from "@/integrations/supabase/client";
 import { useAuth } from "@/contexts/AuthContext";
 import { toast } from "@/hooks/use-toast";
@@ -55,7 +58,7 @@ const Transactions = () => {
   const [receiptFile, setReceiptFile] = useState<File | null>(null);
   const [isParsing, setIsParsing] = useState(false);
   const [isDragging, setIsDragging] = useState(false);
-
+  const [celebrationData, setCelebrationData] = useState<{ total: number; hd: number } | null>(null);
   const handleFile = (file: File) => {
     if (file.size > 5 * 1024 * 1024) {
       toast({ title: "File too large", description: "Max 5MB", variant: "destructive" });
@@ -150,13 +153,15 @@ const Transactions = () => {
       if (error) throw error;
     },
     onSuccess: () => {
+      const total = Number(orderTotal);
+      const hd = Math.floor(total);
       queryClient.invalidateQueries({ queryKey: ["transactions"] });
+      setCelebrationData({ total, hd });
       setOrderDate("");
       setOrderTotal("");
       setOrderId("");
       setReceiptFile(null);
       if (fileInputRef.current) fileInputRef.current.value = "";
-      toast({ title: "Receipt submitted!", description: "Your receipt is pending verification. HomeDollars will be credited once verified." });
     },
     onError: (err: any) => {
       const message = err?.message || "Failed to submit receipt";
@@ -358,6 +363,26 @@ const Transactions = () => {
           </Table>
         )}
       </div>
+      {/* Celebration Dialog */}
+      <Dialog open={!!celebrationData} onOpenChange={(open) => !open && setCelebrationData(null)}>
+        <DialogContent className="text-center sm:max-w-sm">
+          <DialogHeader className="items-center">
+            <div className="mx-auto mb-2 flex h-16 w-16 items-center justify-center rounded-full bg-primary/10">
+              <PartyPopper className="h-8 w-8 text-primary" />
+            </div>
+            <DialogTitle className="text-2xl">Receipt Submitted! 🎉</DialogTitle>
+            <DialogDescription className="text-base">
+              Your <span className="font-semibold text-foreground">${celebrationData?.total.toFixed(2)}</span> purchase earned you
+            </DialogDescription>
+          </DialogHeader>
+          <div className="py-4">
+            <p className="text-5xl font-bold text-primary">{celebrationData?.hd}</p>
+            <p className="mt-1 text-lg text-muted-foreground">HomeDollars</p>
+          </div>
+          <p className="text-sm text-muted-foreground">Pending verification — you'll be credited once confirmed.</p>
+          <Button className="mt-2 w-full" onClick={() => setCelebrationData(null)}>Awesome!</Button>
+        </DialogContent>
+      </Dialog>
     </DashboardLayout>
   );
 };
