@@ -12,7 +12,7 @@ import {
 import {
   Select, SelectContent, SelectItem, SelectTrigger, SelectValue,
 } from "@/components/ui/select";
-import { ShoppingCart, Upload, ExternalLink, CheckCircle, Clock, AlertCircle, Loader2 } from "lucide-react";
+import { ShoppingCart, Upload, ExternalLink, CheckCircle, Clock, AlertCircle, Loader2, Sparkles } from "lucide-react";
 import { supabase } from "@/integrations/supabase/client";
 import { useAuth } from "@/contexts/AuthContext";
 import { toast } from "@/hooks/use-toast";
@@ -53,6 +53,40 @@ const Transactions = () => {
   const [orderTotal, setOrderTotal] = useState("");
   const [orderId, setOrderId] = useState("");
   const [receiptFile, setReceiptFile] = useState<File | null>(null);
+  const [isParsing, setIsParsing] = useState(false);
+
+  const parseReceipt = async (file: File) => {
+    setIsParsing(true);
+    try {
+      const base64 = await new Promise<string>((resolve, reject) => {
+        const reader = new FileReader();
+        reader.onload = () => {
+          const result = reader.result as string;
+          resolve(result.split(",")[1]);
+        };
+        reader.onerror = reject;
+        reader.readAsDataURL(file);
+      });
+
+      const { data, error } = await supabase.functions.invoke("parse-receipt", {
+        body: { imageBase64: base64, mimeType: file.type },
+      });
+
+      if (error) throw error;
+      if (data.error) throw new Error(data.error);
+
+      if (data.orderDate) setOrderDate(data.orderDate);
+      if (data.orderTotal) setOrderTotal(data.orderTotal);
+      if (data.orderId) setOrderId(data.orderId);
+
+      toast({ title: "Receipt parsed!", description: "Fields auto-filled. Please review before submitting." });
+    } catch (err: any) {
+      console.error("Parse error:", err);
+      toast({ title: "Could not parse receipt", description: "Please fill in the fields manually.", variant: "destructive" });
+    } finally {
+      setIsParsing(false);
+    }
+  };
 
   const { data: transactions = [], isLoading } = useQuery({
     queryKey: ["transactions", user?.id],
@@ -185,39 +219,53 @@ const Transactions = () => {
                 <Label htmlFor="order-id">Order ID (optional)</Label>
                 <Input id="order-id" placeholder="e.g. 114-3941689-8772232" value={orderId} onChange={(e) => setOrderId(e.target.value)} maxLength={50} />
               </div>
-              <div>
-                <Label>Receipt Screenshot</Label>
-                <div
-                  className="mt-1 flex items-center justify-center rounded-lg border-2 border-dashed border-muted-foreground/25 p-6 text-center cursor-pointer hover:border-primary/50 transition-colors"
-                  onClick={() => fileInputRef.current?.click()}
-                >
-                  <div>
-                    <Upload className="mx-auto h-8 w-8 text-muted-foreground/50" />
-                    <p className="mt-2 text-sm text-muted-foreground">
-                      {receiptFile ? receiptFile.name : "Click to upload"}
-                    </p>
-                    <p className="text-xs text-muted-foreground/70">PNG, JPG up to 5MB</p>
+                <div>
+                  <Label>Receipt Screenshot</Label>
+                  <div
+                    className="mt-1 flex items-center justify-center rounded-lg border-2 border-dashed border-muted-foreground/25 p-6 text-center cursor-pointer hover:border-primary/50 transition-colors"
+                    onClick={() => !isParsing && fileInputRef.current?.click()}
+                  >
+                    <div>
+                      {isParsing ? (
+                        <>
+                          <Sparkles className="mx-auto h-8 w-8 text-primary animate-pulse" />
+                          <p className="mt-2 text-sm text-primary font-medium">Parsing receipt with AI…</p>
+                        </>
+                      ) : (
+                        <>
+                          <Upload className="mx-auto h-8 w-8 text-muted-foreground/50" />
+                          <p className="mt-2 text-sm text-muted-foreground">
+                            {receiptFile ? receiptFile.name : "Click to upload"}
+                          </p>
+                          <p className="text-xs text-muted-foreground/70">PNG, JPG up to 5MB</p>
+                        </>
+                      )}
+                    </div>
                   </div>
+                  <input
+                    ref={fileInputRef}
+                    type="file"
+                    accept="image/png,image/jpeg"
+                    className="hidden"
+                    onChange={(e) => {
+                      const file = e.target.files?.[0];
+                      if (file && file.size > 5 * 1024 * 1024) {
+                        toast({ title: "File too large", description: "Max 5MB", variant: "destructive" });
+                        return;
+                      }
+                      if (file) {
+                        setReceiptFile(file);
+                        parseReceipt(file);
+                      } else {
+                        setReceiptFile(null);
+                      }
+                    }}
+                  />
                 </div>
-                <input
-                  ref={fileInputRef}
-                  type="file"
-                  accept="image/png,image/jpeg"
-                  className="hidden"
-                  onChange={(e) => {
-                    const file = e.target.files?.[0];
-                    if (file && file.size > 5 * 1024 * 1024) {
-                      toast({ title: "File too large", description: "Max 5MB", variant: "destructive" });
-                      return;
-                    }
-                    setReceiptFile(file || null);
-                  }}
-                />
-              </div>
-              <Button className="w-full" type="submit" disabled={submitMutation.isPending}>
-                {submitMutation.isPending && <Loader2 className="mr-2 h-4 w-4 animate-spin" />}
-                Submit Receipt
-              </Button>
+                <Button className="w-full" type="submit" disabled={submitMutation.isPending || isParsing}>
+                  {submitMutation.isPending && <Loader2 className="mr-2 h-4 w-4 animate-spin" />}
+                  Submit Receipt
+                </Button>
             </form>
           </CardContent>
         </Card>
