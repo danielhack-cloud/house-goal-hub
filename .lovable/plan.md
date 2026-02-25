@@ -1,114 +1,61 @@
 
 
-# HomeDollars.com Platform Build Plan
+## Automated Receipt Parsing System
 
-## Overview
+Yes — this is very doable. The current system already uploads receipt images and saves transactions, but users must manually enter the order total and date. We can enhance this with AI-powered receipt parsing so users just upload a photo and the system extracts the spending data automatically.
 
-Rebrand the current SavMoney platform to **HomeDollars.com** and build out the core member experience: shopping through Amazon, tracking purchases, earning HomeDollars (1 HD per $1 spent), and accumulating toward a home down payment goal.
+### How It Works
 
----
+1. User uploads a receipt screenshot (already built)
+2. Image is uploaded to storage (already built)
+3. A backend function receives the image and uses AI (Gemini 2.5 Flash — available via Lovable AI, no API key needed) to extract: order total, order date, and order ID
+4. The extracted data auto-fills the form fields, or optionally submits directly with a "pending" status for review
 
-## Phase 1: Rebrand and Core UI Updates
+### Implementation Plan
 
-**Files to update:** `AppSidebar.tsx`, `Index.tsx`, `Members.tsx`, `MemberProfile.tsx`, `Rewards.tsx`, `Jobs.tsx`, `index.html`
+**1. Create a backend function: `parse-receipt`**
+- Accepts the uploaded image (as base64 or storage path)
+- Sends it to Gemini 2.5 Flash with a prompt like: "Extract the order total, order date, and order ID from this receipt image. Return JSON."
+- Returns the parsed data to the frontend
 
-- Rename all "SavMoney" references to "HomeDollars"
-- Update branding, logo text, and footer
-- Update page title in `index.html`
+**2. Update the Transactions page (`src/pages/Transactions.tsx`)**
+- After the user selects a receipt image, automatically call the `parse-receipt` function
+- Auto-populate the Order Date, Order Total, and Order ID fields with the AI-extracted values
+- User can review/correct before submitting
+- Show a loading state while parsing
 
----
+**3. Flow**
 
-## Phase 2: Member Dashboard Redesign
+```text
+User uploads receipt image
+        │
+        ▼
+Frontend sends image to parse-receipt edge function
+        │
+        ▼
+Edge function sends to Gemini 2.5 Flash (vision)
+        │
+        ▼
+AI returns { orderDate, orderTotal, orderId }
+        │
+        ▼
+Frontend auto-fills form fields
+        │
+        ▼
+User reviews and clicks "Submit Receipt"
+        │
+        ▼
+Transaction saved to database (status: pending)
+```
 
-**File:** `Index.tsx`
+### Technical Details
 
-- Replace current admin-focused dashboard with a **member-facing** dashboard showing:
-  - **HomeDollars Balance** (total earned)
-  - **Lifetime Amazon Spending** tracked
-  - **Home Savings Goal** progress bar (e.g., $50,000 down payment target)
-  - **Recent Transactions** table (date, Amazon order, amount, HomeDollars earned)
-- Add a prominent "Shop on Amazon" call-to-action button (affiliate link placeholder)
+- **AI Model**: Gemini 2.5 Flash (multimodal, supports image input, available via Lovable AI — no API key required)
+- **Edge Function**: `supabase/functions/parse-receipt/index.ts` — receives image, calls Gemini, returns structured JSON
+- **No new database changes needed** — the existing `transactions` table already has all required columns
+- **Security**: The edge function will verify the user is authenticated before processing
 
----
+### What Users Experience
 
-## Phase 3: Transaction Tracking Page
-
-**New file:** `src/pages/Transactions.tsx`
-
-Build a transactions page with two earning methods:
-
-### Method 1: Amazon Shopping Link
-- "Shop Now" button that routes users to Amazon via an affiliate-style link
-- Explanation of how purchases are tracked
-
-### Method 2: Receipt Upload
-- Upload area where users can submit a screenshot of their Amazon receipt
-- Form fields: order date, order total, optional order ID
-- Status indicators: Pending Review, Verified, HomeDollars Credited
-- Sample mock data showing past submissions
-
-### Transaction History Table
-- Columns: Date, Order ID, Amount Spent, HomeDollars Earned, Source (Link / Receipt), Status
-- Filter by date range and status
-
----
-
-## Phase 4: HomeDollars Rewards Page Update
-
-**File:** `Rewards.tsx`
-
-- Rebrand points to "HomeDollars" (1 HD = $1 spent)
-- Show earning rate explanation
-- Add a **Home Savings Goal** section with progress visualization
-- Tier system based on lifetime HomeDollars earned:
-  - Starter: 0-999 HD
-  - Builder: 1,000-4,999 HD
-  - Foundation: 5,000-14,999 HD
-  - Homeowner: 15,000+ HD
-
----
-
-## Phase 5: Member Profile Update
-
-**File:** `MemberProfile.tsx`
-
-- Add HomeDollars balance and lifetime earnings to profile header
-- Add home buying goal and timeline fields
-- Show recent transaction activity
-- Display current tier and progress to next tier
-
----
-
-## Phase 6: Navigation and Routing
-
-**Files:** `AppSidebar.tsx`, `App.tsx`
-
-- Add "Transactions" nav item with a receipt/shopping icon
-- Rename "Rewards" to "HomeDollars"
-- Add route for `/transactions`
-- Reorder sidebar: Dashboard, Transactions, HomeDollars, Members, Job Board, etc.
-
----
-
-## Technical Notes
-
-- **Amazon API integration and real receipt processing** require backend infrastructure (Supabase/Cloud) and would be a future phase. This build will use mock data and UI placeholders that are ready to connect.
-- **Receipt screenshot upload** UI will be built now; actual OCR/parsing (like Fetch app does) would need a service like Firecrawl or a custom edge function — can be added after enabling Lovable Cloud.
-- All pages use the existing `DashboardLayout` pattern and shadcn/ui components already in the project.
-
----
-
-## Files Changed or Created
-
-| File | Action |
-|------|--------|
-| `index.html` | Update title |
-| `src/components/AppSidebar.tsx` | Rebrand + add Transactions nav |
-| `src/App.tsx` | Add `/transactions` route |
-| `src/pages/Index.tsx` | Member-facing dashboard redesign |
-| `src/pages/Transactions.tsx` | New - transaction tracking + receipt upload |
-| `src/pages/Rewards.tsx` | Rebrand to HomeDollars rewards |
-| `src/pages/MemberProfile.tsx` | Add HomeDollars data to profile |
-| `src/pages/Members.tsx` | Minor rebrand updates |
-| `src/pages/Jobs.tsx` | Minor rebrand updates |
+Upload a receipt photo → fields auto-fill with the dollar amount, date, and order ID → review and submit. No manual data entry needed.
 
