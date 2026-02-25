@@ -54,6 +54,20 @@ const Transactions = () => {
   const [orderId, setOrderId] = useState("");
   const [receiptFile, setReceiptFile] = useState<File | null>(null);
   const [isParsing, setIsParsing] = useState(false);
+  const [isDragging, setIsDragging] = useState(false);
+
+  const handleFile = (file: File) => {
+    if (file.size > 5 * 1024 * 1024) {
+      toast({ title: "File too large", description: "Max 5MB", variant: "destructive" });
+      return;
+    }
+    if (!file.type.match(/^image\/(png|jpeg)$/)) {
+      toast({ title: "Invalid file type", description: "Only PNG and JPG allowed", variant: "destructive" });
+      return;
+    }
+    setReceiptFile(file);
+    parseReceipt(file);
+  };
 
   const parseReceipt = async (file: File) => {
     setIsParsing(true);
@@ -222,8 +236,22 @@ const Transactions = () => {
                 <div>
                   <Label>Receipt Screenshot</Label>
                   <div
-                    className="mt-1 flex items-center justify-center rounded-lg border-2 border-dashed border-muted-foreground/25 p-6 text-center cursor-pointer hover:border-primary/50 transition-colors"
+                    className={`mt-1 flex items-center justify-center rounded-lg border-2 border-dashed p-6 text-center cursor-pointer transition-colors ${
+                      isDragging
+                        ? "border-primary bg-primary/5"
+                        : "border-muted-foreground/25 hover:border-primary/50"
+                    }`}
                     onClick={() => !isParsing && fileInputRef.current?.click()}
+                    onDragOver={(e) => { e.preventDefault(); setIsDragging(true); }}
+                    onDragEnter={(e) => { e.preventDefault(); setIsDragging(true); }}
+                    onDragLeave={() => setIsDragging(false)}
+                    onDrop={(e) => {
+                      e.preventDefault();
+                      setIsDragging(false);
+                      if (isParsing) return;
+                      const file = e.dataTransfer.files?.[0];
+                      if (file) handleFile(file);
+                    }}
                   >
                     <div>
                       {isParsing ? (
@@ -231,11 +259,16 @@ const Transactions = () => {
                           <Sparkles className="mx-auto h-8 w-8 text-primary animate-pulse" />
                           <p className="mt-2 text-sm text-primary font-medium">Parsing receipt with AI…</p>
                         </>
+                      ) : isDragging ? (
+                        <>
+                          <Upload className="mx-auto h-8 w-8 text-primary" />
+                          <p className="mt-2 text-sm text-primary font-medium">Drop your receipt here</p>
+                        </>
                       ) : (
                         <>
                           <Upload className="mx-auto h-8 w-8 text-muted-foreground/50" />
                           <p className="mt-2 text-sm text-muted-foreground">
-                            {receiptFile ? receiptFile.name : "Click to upload"}
+                            {receiptFile ? receiptFile.name : "Click or drag to upload"}
                           </p>
                           <p className="text-xs text-muted-foreground/70">PNG, JPG up to 5MB</p>
                         </>
@@ -249,16 +282,7 @@ const Transactions = () => {
                     className="hidden"
                     onChange={(e) => {
                       const file = e.target.files?.[0];
-                      if (file && file.size > 5 * 1024 * 1024) {
-                        toast({ title: "File too large", description: "Max 5MB", variant: "destructive" });
-                        return;
-                      }
-                      if (file) {
-                        setReceiptFile(file);
-                        parseReceipt(file);
-                      } else {
-                        setReceiptFile(null);
-                      }
+                      if (file) handleFile(file);
                     }}
                   />
                 </div>
