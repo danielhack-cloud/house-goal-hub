@@ -26,8 +26,8 @@ const AppSidebar = () => {
 
   return (
     <aside className="fixed left-0 top-0 z-40 flex h-screen w-64 flex-col bg-sidebar text-sidebar-foreground">
-      <div className="flex h-16 items-center gap-2 border-b border-sidebar-border px-4">
-        <img src="/images/homedollars-logo.png" alt="HomeDollars" className="h-8" />
+      <div className="flex h-16 items-center border-b border-sidebar-border px-4">
+        <img src="/images/homedollars-logo.png" alt="HomeDollars" className="h-8 rounded" style={{ mixBlendMode: 'screen' }} />
       </div>
 
       <nav className="flex-1 space-y-1 px-3 py-4">
