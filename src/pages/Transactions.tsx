@@ -1,4 +1,4 @@
-import { useState, useRef } from "react";
+import { useState, useRef, useEffect } from "react";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import DashboardLayout from "@/components/DashboardLayout";
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card";
@@ -12,13 +12,14 @@ import {
 import {
   Select, SelectContent, SelectItem, SelectTrigger, SelectValue,
 } from "@/components/ui/select";
-import { ShoppingCart, Upload, ExternalLink, CheckCircle, Clock, AlertCircle, Loader2, Sparkles, PartyPopper } from "lucide-react";
+import { ShoppingCart, Upload, ExternalLink, CheckCircle, Clock, AlertCircle, Loader2, Sparkles, PartyPopper, Camera } from "lucide-react";
 import {
   Dialog, DialogContent, DialogHeader, DialogTitle, DialogDescription,
 } from "@/components/ui/dialog";
 import { supabase } from "@/integrations/supabase/client";
 import { useAuth } from "@/contexts/AuthContext";
 import { toast } from "@/hooks/use-toast";
+import { useCamera } from "@/hooks/use-camera";
 import { z } from "zod";
 
 const receiptSchema = z.object({
@@ -59,6 +60,18 @@ const Transactions = () => {
   const [isParsing, setIsParsing] = useState(false);
   const [isDragging, setIsDragging] = useState(false);
   const [celebrationData, setCelebrationData] = useState<{ total: number; hd: number } | null>(null);
+  const { takePhoto, checkNative, isNative } = useCamera();
+
+  useEffect(() => { checkNative(); }, [checkNative]);
+
+  const handleCameraCapture = async () => {
+    const result = await takePhoto();
+    if (result) {
+      setReceiptFile(result.file);
+      parseReceipt(result.file);
+    }
+  };
+
   const handleFile = (file: File) => {
     if (file.size > 5 * 1024 * 1024) {
       toast({ title: "File too large", description: "Max 5MB", variant: "destructive" });
@@ -291,6 +304,18 @@ const Transactions = () => {
                     }}
                   />
                 </div>
+                {isNative && (
+                  <Button
+                    type="button"
+                    variant="outline"
+                    className="w-full"
+                    onClick={handleCameraCapture}
+                    disabled={isParsing}
+                  >
+                    <Camera className="mr-2 h-4 w-4" />
+                    Take Photo of Receipt
+                  </Button>
+                )}
                 <Button className="w-full" type="submit" disabled={submitMutation.isPending || isParsing}>
                   {submitMutation.isPending && <Loader2 className="mr-2 h-4 w-4 animate-spin" />}
                   Submit Receipt
