@@ -68,8 +68,7 @@ const Landing = () => {
       <header className="sticky top-0 z-50 border-b border-border bg-background/80 backdrop-blur-md">
         <div className="mx-auto flex h-16 max-w-6xl items-center justify-between px-6">
           <div className="flex items-center gap-2">
-            <Home className="h-6 w-6 text-primary" />
-            <span className="font-heading text-xl font-bold text-primary">HomeDollars</span>
+            <img src="/images/homedollars-logo.png" alt="HomeDollars" className="h-8" />
           </div>
           <div className="flex items-center gap-3">
             {user && (
@@ -97,15 +96,15 @@ const Landing = () => {
           className="absolute inset-0 bg-cover bg-center"
           style={{ backgroundImage: "url('/images/hero-home.webp')" }}
         />
-        <div className="absolute inset-0 bg-foreground/60" />
+        <div className="absolute inset-0 bg-foreground/70" />
         <div className="relative mx-auto max-w-6xl px-6 py-24 text-center lg:py-36">
-          <div className="mb-6 inline-flex items-center gap-2 rounded-full border border-secondary/40 bg-secondary/20 px-4 py-1.5 text-sm font-medium text-primary-foreground">
-            <Sparkles className="h-4 w-4 text-secondary" />
+          <div className="mb-6 inline-flex items-center gap-2 rounded-full border border-primary/40 bg-primary/20 px-4 py-1.5 text-sm font-medium text-primary-foreground">
+            <Sparkles className="h-4 w-4 text-primary" />
             Launching Early 2026
           </div>
           <h1 className="mx-auto max-w-3xl font-heading text-4xl font-bold leading-tight text-primary-foreground sm:text-5xl lg:text-6xl">
             Turn Your Everyday Shopping Into a{" "}
-            <span className="text-secondary">Down Payment</span>
+            <span className="text-primary">Down Payment</span>
           </h1>
           <p className="mx-auto mt-6 max-w-2xl text-lg text-primary-foreground/80">
             Shop on Amazon like you normally do. Every dollar you spend earns HomeDollars

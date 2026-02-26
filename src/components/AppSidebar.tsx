@@ -1,6 +1,6 @@
 import { Link, useLocation, useNavigate } from "react-router-dom";
 import { 
-  LayoutDashboard, Users, Home, Briefcase, Mail, Handshake, Settings, Receipt, DollarSign, Activity, UserCircle, LogIn, LogOut
+  LayoutDashboard, Users, Briefcase, Mail, Handshake, Settings, Receipt, DollarSign, Activity, UserCircle, LogIn, LogOut
 } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { useAuth } from "@/contexts/AuthContext";
@@ -26,11 +26,8 @@ const AppSidebar = () => {
 
   return (
     <aside className="fixed left-0 top-0 z-40 flex h-screen w-64 flex-col bg-sidebar text-sidebar-foreground">
-      <div className="flex h-16 items-center gap-2 border-b border-sidebar-border px-6">
-        <Home className="h-6 w-6 text-sidebar-primary" />
-        <span className="font-heading text-xl font-bold text-sidebar-primary">
-          HomeDollars
-        </span>
+      <div className="flex h-16 items-center gap-2 border-b border-sidebar-border px-4">
+        <img src="/images/homedollars-logo.png" alt="HomeDollars" className="h-8" />
       </div>
 
       <nav className="flex-1 space-y-1 px-3 py-4">
