@@ -19,39 +19,46 @@ const navItems = [
   { icon: Settings, label: "Settings", path: "/settings" },
 ];
 
-const AppSidebar = () => {
+interface AppSidebarProps {
+  onNavigate?: () => void;
+}
+
+const AppSidebar = ({ onNavigate }: AppSidebarProps) => {
   const location = useLocation();
   const navigate = useNavigate();
   const { user, signOut } = useAuth();
 
   return (
-    <aside className="fixed left-0 top-0 z-40 flex h-screen w-64 flex-col bg-sidebar text-sidebar-foreground">
-      <div className="flex h-16 items-center border-b border-sidebar-border px-4">
+    <aside className="flex h-full w-64 flex-col bg-sidebar text-sidebar-foreground md:fixed md:left-0 md:top-0 md:z-40 md:h-screen">
+      <div className="hidden md:flex h-16 items-center border-b border-sidebar-border px-4">
         <img src="/images/homedollars-logo.png" alt="HomeDollars" className="h-8 rounded" style={{ mixBlendMode: 'screen' }} />
       </div>
 
-      <nav className="flex-1 space-y-1 px-3 py-4">
+      <nav className="flex-1 space-y-1 px-3 py-4 overflow-y-auto">
         {navItems.map((item) => {
           const isActive = location.pathname === item.path;
           return (
             <Link
               key={item.path}
               to={item.path}
+              onClick={onNavigate}
               className={cn(
-                "flex items-center gap-3 rounded-lg px-3 py-2.5 text-sm font-medium transition-colors",
+                "flex items-center gap-3 rounded-lg px-3 py-3 text-sm font-medium transition-colors",
                 isActive
                   ? "bg-sidebar-accent text-sidebar-primary"
                   : "text-sidebar-foreground/70 hover:bg-sidebar-accent hover:text-sidebar-foreground"
               )}
             >
-              <item.icon className="h-4 w-4" />
+              <item.icon className="h-5 w-5" />
               {item.label}
             </Link>
           );
         })}
       </nav>
 
-      <div className="border-t border-sidebar-border p-4 space-y-3">
+      <div className="border-t border-sidebar-border p-4 space-y-3"
+        style={{ paddingBottom: "calc(env(safe-area-inset-bottom) + 1rem)" }}
+      >
         {user ? (
           <div className="space-y-2">
             <p className="truncate text-xs font-medium text-sidebar-foreground/70">{user.email}</p>
@@ -59,7 +66,7 @@ const AppSidebar = () => {
               variant="ghost"
               size="sm"
               className="w-full justify-start gap-2 text-sidebar-foreground/70 hover:text-sidebar-foreground"
-              onClick={async () => { await signOut(); navigate("/auth"); }}
+              onClick={async () => { await signOut(); navigate("/auth"); onNavigate?.(); }}
             >
               <LogOut className="h-4 w-4" /> Sign Out
             </Button>
@@ -69,7 +76,7 @@ const AppSidebar = () => {
             variant="ghost"
             size="sm"
             className="w-full justify-start gap-2 text-sidebar-foreground/70 hover:text-sidebar-foreground"
-            onClick={() => navigate("/auth")}
+            onClick={() => { navigate("/auth"); onNavigate?.(); }}
           >
             <LogIn className="h-4 w-4" /> Sign In
           </Button>

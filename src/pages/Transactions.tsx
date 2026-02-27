@@ -51,6 +51,7 @@ const Transactions = () => {
   const { user } = useAuth();
   const queryClient = useQueryClient();
   const fileInputRef = useRef<HTMLInputElement>(null);
+  const cameraInputRef = useRef<HTMLInputElement>(null);
 
   const [statusFilter, setStatusFilter] = useState("all");
   const [orderDate, setOrderDate] = useState("");
@@ -65,10 +66,15 @@ const Transactions = () => {
   useEffect(() => { checkNative(); }, [checkNative]);
 
   const handleCameraCapture = async () => {
-    const result = await takePhoto();
-    if (result) {
-      setReceiptFile(result.file);
-      parseReceipt(result.file);
+    if (isNative) {
+      const result = await takePhoto();
+      if (result) {
+        setReceiptFile(result.file);
+        parseReceipt(result.file);
+      }
+    } else {
+      // Web fallback: trigger camera input
+      cameraInputRef.current?.click();
     }
   };
 
@@ -77,7 +83,7 @@ const Transactions = () => {
       toast({ title: "File too large", description: "Max 5MB", variant: "destructive" });
       return;
     }
-    if (!file.type.match(/^image\/(png|jpeg)$/)) {
+    if (!file.type.match(/^image\/(png|jpeg|jpg)$/)) {
       toast({ title: "Invalid file type", description: "Only PNG and JPG allowed", variant: "destructive" });
       return;
     }
@@ -136,13 +142,11 @@ const Transactions = () => {
   const submitMutation = useMutation({
     mutationFn: async () => {
       if (!user) throw new Error("Not authenticated");
-
       const parsed = receiptSchema.parse({ orderDate, orderTotal, orderId });
       const total = Number(parsed.orderTotal);
       const hdEarned = Math.floor(total);
 
       let receiptUrl: string | null = null;
-
       if (receiptFile) {
         const ext = receiptFile.name.split(".").pop();
         const path = `${user.id}/${Date.now()}.${ext}`;
@@ -188,26 +192,45 @@ const Transactions = () => {
 
   return (
     <DashboardLayout>
-      <div className="mb-8">
-        <h1 className="font-heading text-3xl font-bold">Transactions</h1>
-        <p className="mt-1 text-muted-foreground">
+      <div className="mb-6 md:mb-8">
+        <h1 className="font-heading text-2xl md:text-3xl font-bold">Transactions</h1>
+        <p className="mt-1 text-sm md:text-base text-muted-foreground">
           Shop on Amazon and earn 1 HomeDollar for every $1 spent
         </p>
       </div>
 
+      {/* Prominent camera button for mobile */}
+      <div className="mb-4 md:hidden">
+        <Button size="lg" className="w-full gap-2 text-base py-6" onClick={handleCameraCapture} disabled={isParsing}>
+          {isParsing ? <Loader2 className="h-5 w-5 animate-spin" /> : <Camera className="h-5 w-5" />}
+          {isParsing ? "Parsing Receipt…" : "📸 Snap a Receipt"}
+        </Button>
+        <input
+          ref={cameraInputRef}
+          type="file"
+          accept="image/*"
+          capture="environment"
+          className="hidden"
+          onChange={(e) => {
+            const file = e.target.files?.[0];
+            if (file) handleFile(file);
+          }}
+        />
+      </div>
+
       <div className="grid gap-6 md:grid-cols-2">
-        {/* Method 1: Shop via Link */}
+        {/* Shop via Link */}
         <Card>
-          <CardHeader>
-            <CardTitle className="flex items-center gap-2">
+          <CardHeader className="p-4 md:p-6">
+            <CardTitle className="flex items-center gap-2 text-base md:text-lg">
               <ShoppingCart className="h-5 w-5 text-primary" />
               Shop on Amazon
             </CardTitle>
-            <CardDescription>
-              Use our link to shop on Amazon. Your purchases are automatically tracked and HomeDollars are credited to your account.
+            <CardDescription className="text-xs md:text-sm">
+              Use our link to shop. Purchases are automatically tracked.
             </CardDescription>
           </CardHeader>
-          <CardContent>
+          <CardContent className="p-4 pt-0 md:p-6 md:pt-0">
             <Button size="lg" className="w-full" asChild>
               <a href="https://www.amazon.com/?tag=homedollars-20" target="_blank" rel="noopener noreferrer">
                 <ExternalLink className="mr-2 h-4 w-4" />
@@ -215,23 +238,23 @@ const Transactions = () => {
               </a>
             </Button>
             <p className="mt-3 text-xs text-muted-foreground text-center">
-              Opens Amazon.com — your purchases will be tracked automatically via our affiliate link.
+              Opens Amazon.com — tracked via our affiliate link.
             </p>
           </CardContent>
         </Card>
 
-        {/* Method 2: Receipt Upload */}
+        {/* Receipt Upload */}
         <Card>
-          <CardHeader>
-            <CardTitle className="flex items-center gap-2">
+          <CardHeader className="p-4 md:p-6">
+            <CardTitle className="flex items-center gap-2 text-base md:text-lg">
               <Upload className="h-5 w-5 text-primary" />
               Submit a Receipt
             </CardTitle>
-            <CardDescription>
-              Shopped directly on Amazon? Upload a screenshot of your order confirmation to earn HomeDollars.
+            <CardDescription className="text-xs md:text-sm">
+              Upload a screenshot of your order confirmation to earn HomeDollars.
             </CardDescription>
           </CardHeader>
-          <CardContent>
+          <CardContent className="p-4 pt-0 md:p-6 md:pt-0">
             <form
               className="space-y-3"
               onSubmit={(e) => {
@@ -241,101 +264,102 @@ const Transactions = () => {
             >
               <div>
                 <Label htmlFor="order-date">Order Date</Label>
-                <Input id="order-date" type="date" value={orderDate} onChange={(e) => setOrderDate(e.target.value)} required />
+                <Input id="order-date" type="date" value={orderDate} onChange={(e) => setOrderDate(e.target.value)} required className="h-11" />
               </div>
               <div>
                 <Label htmlFor="order-total">Order Total ($)</Label>
-                <Input id="order-total" type="number" placeholder="0.00" step="0.01" min="0.01" value={orderTotal} onChange={(e) => setOrderTotal(e.target.value)} required />
+                <Input id="order-total" type="number" placeholder="0.00" step="0.01" min="0.01" value={orderTotal} onChange={(e) => setOrderTotal(e.target.value)} required className="h-11" />
               </div>
               <div>
                 <Label htmlFor="order-id">Order ID (optional)</Label>
-                <Input id="order-id" placeholder="e.g. 114-3941689-8772232" value={orderId} onChange={(e) => setOrderId(e.target.value)} maxLength={50} />
+                <Input id="order-id" placeholder="e.g. 114-3941689-8772232" value={orderId} onChange={(e) => setOrderId(e.target.value)} maxLength={50} className="h-11" />
               </div>
-                <div>
-                  <Label>Receipt Screenshot</Label>
-                  <div
-                    className={`mt-1 flex items-center justify-center rounded-lg border-2 border-dashed p-6 text-center cursor-pointer transition-colors ${
-                      isDragging
-                        ? "border-primary bg-primary/5"
-                        : "border-muted-foreground/25 hover:border-primary/50"
-                    }`}
-                    onClick={() => !isParsing && fileInputRef.current?.click()}
-                    onDragOver={(e) => { e.preventDefault(); setIsDragging(true); }}
-                    onDragEnter={(e) => { e.preventDefault(); setIsDragging(true); }}
-                    onDragLeave={() => setIsDragging(false)}
-                    onDrop={(e) => {
-                      e.preventDefault();
-                      setIsDragging(false);
-                      if (isParsing) return;
-                      const file = e.dataTransfer.files?.[0];
-                      if (file) handleFile(file);
-                    }}
-                  >
-                    <div>
-                      {isParsing ? (
-                        <>
-                          <Sparkles className="mx-auto h-8 w-8 text-primary animate-pulse" />
-                          <p className="mt-2 text-sm text-primary font-medium">Parsing receipt with AI…</p>
-                        </>
-                      ) : isDragging ? (
-                        <>
-                          <Upload className="mx-auto h-8 w-8 text-primary" />
-                          <p className="mt-2 text-sm text-primary font-medium">Drop your receipt here</p>
-                        </>
-                      ) : (
-                        <>
-                          <Upload className="mx-auto h-8 w-8 text-muted-foreground/50" />
-                          <p className="mt-2 text-sm text-muted-foreground">
-                            {receiptFile ? receiptFile.name : "Click or drag to upload"}
-                          </p>
-                          <p className="text-xs text-muted-foreground/70">PNG, JPG up to 5MB</p>
-                        </>
-                      )}
-                    </div>
+              <div>
+                <Label>Receipt Screenshot</Label>
+                <div
+                  className={`mt-1 flex items-center justify-center rounded-lg border-2 border-dashed p-4 md:p-6 text-center cursor-pointer transition-colors ${
+                    isDragging
+                      ? "border-primary bg-primary/5"
+                      : "border-muted-foreground/25 hover:border-primary/50"
+                  }`}
+                  onClick={() => !isParsing && fileInputRef.current?.click()}
+                  onDragOver={(e) => { e.preventDefault(); setIsDragging(true); }}
+                  onDragEnter={(e) => { e.preventDefault(); setIsDragging(true); }}
+                  onDragLeave={() => setIsDragging(false)}
+                  onDrop={(e) => {
+                    e.preventDefault();
+                    setIsDragging(false);
+                    if (isParsing) return;
+                    const file = e.dataTransfer.files?.[0];
+                    if (file) handleFile(file);
+                  }}
+                >
+                  <div>
+                    {isParsing ? (
+                      <>
+                        <Sparkles className="mx-auto h-7 w-7 text-primary animate-pulse" />
+                        <p className="mt-1.5 text-sm text-primary font-medium">Parsing receipt…</p>
+                      </>
+                    ) : isDragging ? (
+                      <>
+                        <Upload className="mx-auto h-7 w-7 text-primary" />
+                        <p className="mt-1.5 text-sm text-primary font-medium">Drop here</p>
+                      </>
+                    ) : (
+                      <>
+                        <Upload className="mx-auto h-7 w-7 text-muted-foreground/50" />
+                        <p className="mt-1.5 text-sm text-muted-foreground">
+                          {receiptFile ? receiptFile.name : "Tap to upload"}
+                        </p>
+                        <p className="text-xs text-muted-foreground/70">PNG, JPG up to 5MB</p>
+                      </>
+                    )}
                   </div>
-                  <input
-                    ref={fileInputRef}
-                    type="file"
-                    accept="image/png,image/jpeg"
-                    className="hidden"
-                    onChange={(e) => {
-                      const file = e.target.files?.[0];
-                      if (file) handleFile(file);
-                    }}
-                  />
                 </div>
-                {isNative && (
-                  <Button
-                    type="button"
-                    variant="outline"
-                    className="w-full"
-                    onClick={handleCameraCapture}
-                    disabled={isParsing}
-                  >
-                    <Camera className="mr-2 h-4 w-4" />
-                    Take Photo of Receipt
-                  </Button>
-                )}
-                <Button className="w-full" type="submit" disabled={submitMutation.isPending || isParsing}>
-                  {submitMutation.isPending && <Loader2 className="mr-2 h-4 w-4 animate-spin" />}
-                  Submit Receipt
+                <input
+                  ref={fileInputRef}
+                  type="file"
+                  accept="image/png,image/jpeg"
+                  className="hidden"
+                  onChange={(e) => {
+                    const file = e.target.files?.[0];
+                    if (file) handleFile(file);
+                  }}
+                />
+              </div>
+
+              {/* Camera button for desktop / native */}
+              <div className="hidden md:block">
+                <Button
+                  type="button"
+                  variant="outline"
+                  className="w-full"
+                  onClick={handleCameraCapture}
+                  disabled={isParsing}
+                >
+                  <Camera className="mr-2 h-4 w-4" />
+                  Take Photo of Receipt
                 </Button>
+              </div>
+
+              <Button className="w-full h-11" type="submit" disabled={submitMutation.isPending || isParsing}>
+                {submitMutation.isPending && <Loader2 className="mr-2 h-4 w-4 animate-spin" />}
+                Submit Receipt
+              </Button>
             </form>
           </CardContent>
         </Card>
       </div>
 
       {/* Transaction History */}
-      <div className="mt-8 rounded-xl border bg-card shadow-sm">
-        <div className="flex items-center justify-between border-b p-6">
+      <div className="mt-6 md:mt-8 rounded-xl border bg-card shadow-sm">
+        <div className="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between border-b p-4 md:p-6">
           <div>
-            <h2 className="font-heading text-xl font-semibold text-card-foreground">
-              Transaction History
-            </h2>
-            <p className="text-sm text-muted-foreground">All your Amazon purchases and HomeDollars earned</p>
+            <h2 className="font-heading text-lg md:text-xl font-semibold text-card-foreground">Transaction History</h2>
+            <p className="text-xs md:text-sm text-muted-foreground">Your purchases and HomeDollars earned</p>
           </div>
           <Select value={statusFilter} onValueChange={setStatusFilter}>
-            <SelectTrigger className="w-36">
+            <SelectTrigger className="w-full sm:w-36">
               <SelectValue placeholder="Status" />
             </SelectTrigger>
             <SelectContent>
@@ -351,43 +375,67 @@ const Transactions = () => {
             <Loader2 className="h-6 w-6 animate-spin text-muted-foreground" />
           </div>
         ) : filtered.length === 0 ? (
-          <div className="p-12 text-center text-muted-foreground">
+          <div className="p-8 md:p-12 text-center text-muted-foreground">
             No transactions yet. Shop on Amazon or submit a receipt to get started!
           </div>
         ) : (
-          <Table>
-            <TableHeader>
-              <TableRow>
-                <TableHead>Date</TableHead>
-                <TableHead>Order ID</TableHead>
-                <TableHead>Amount</TableHead>
-                <TableHead>HD Earned</TableHead>
-                <TableHead>Source</TableHead>
-                <TableHead>Status</TableHead>
-              </TableRow>
-            </TableHeader>
-            <TableBody>
+          <>
+            {/* Mobile card layout */}
+            <div className="md:hidden divide-y">
               {filtered.map((tx: any) => (
-                <TableRow key={tx.id}>
-                  <TableCell className="text-muted-foreground">{formatDate(tx.order_date)}</TableCell>
-                  <TableCell className="font-mono text-xs">{tx.order_id || "—"}</TableCell>
-                  <TableCell>${Number(tx.order_total).toFixed(2)}</TableCell>
-                  <TableCell className="font-semibold text-primary">+{tx.hd_earned}</TableCell>
-                  <TableCell>
-                    <Badge variant="outline" className="capitalize">{tx.source}</Badge>
-                  </TableCell>
-                  <TableCell>
-                    <Badge variant={statusVariant(tx.status)} className="gap-1 capitalize">
+                <div key={tx.id} className="p-4 space-y-1">
+                  <div className="flex items-center justify-between">
+                    <span className="text-sm font-semibold text-primary">+{tx.hd_earned} HD</span>
+                    <Badge variant={statusVariant(tx.status)} className="gap-1 capitalize text-xs">
                       {statusIcon(tx.status)}
                       {tx.status}
                     </Badge>
-                  </TableCell>
-                </TableRow>
+                  </div>
+                  <p className="text-sm">${Number(tx.order_total).toFixed(2)}</p>
+                  <div className="flex items-center justify-between">
+                    <span className="text-xs text-muted-foreground">{formatDate(tx.order_date)}</span>
+                    <Badge variant="outline" className="capitalize text-xs">{tx.source}</Badge>
+                  </div>
+                </div>
               ))}
-            </TableBody>
-          </Table>
+            </div>
+
+            {/* Desktop table */}
+            <div className="hidden md:block overflow-x-auto">
+              <Table>
+                <TableHeader>
+                  <TableRow>
+                    <TableHead>Date</TableHead>
+                    <TableHead>Order ID</TableHead>
+                    <TableHead>Amount</TableHead>
+                    <TableHead>HD Earned</TableHead>
+                    <TableHead>Source</TableHead>
+                    <TableHead>Status</TableHead>
+                  </TableRow>
+                </TableHeader>
+                <TableBody>
+                  {filtered.map((tx: any) => (
+                    <TableRow key={tx.id}>
+                      <TableCell className="text-muted-foreground">{formatDate(tx.order_date)}</TableCell>
+                      <TableCell className="font-mono text-xs">{tx.order_id || "—"}</TableCell>
+                      <TableCell>${Number(tx.order_total).toFixed(2)}</TableCell>
+                      <TableCell className="font-semibold text-primary">+{tx.hd_earned}</TableCell>
+                      <TableCell><Badge variant="outline" className="capitalize">{tx.source}</Badge></TableCell>
+                      <TableCell>
+                        <Badge variant={statusVariant(tx.status)} className="gap-1 capitalize">
+                          {statusIcon(tx.status)}
+                          {tx.status}
+                        </Badge>
+                      </TableCell>
+                    </TableRow>
+                  ))}
+                </TableBody>
+              </Table>
+            </div>
+          </>
         )}
       </div>
+
       {/* Celebration Dialog */}
       <Dialog open={!!celebrationData} onOpenChange={(open) => !open && setCelebrationData(null)}>
         <DialogContent className="text-center sm:max-w-sm">

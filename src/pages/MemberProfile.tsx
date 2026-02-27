@@ -69,38 +69,35 @@ const MemberProfile = () => {
   return (
     <DashboardLayout>
       {/* Cover + Avatar */}
-      <div className="relative mb-20 overflow-hidden rounded-xl bg-gradient-to-r from-primary to-primary/70 p-8 pb-16">
+      <div className="relative mb-16 md:mb-20 overflow-hidden rounded-xl bg-gradient-to-r from-primary to-primary/70 p-6 md:p-8 pb-14 md:pb-16">
         <div className="relative z-10">
-          <div className="flex items-start justify-between">
-            <div />
-            <div className="flex gap-2">
-              <Button variant="outline" size="sm" className="border-primary-foreground/30 bg-primary-foreground/10 text-primary-foreground hover:bg-primary-foreground/20">
-                <Share2 className="mr-1.5 h-3.5 w-3.5" /> Share
-              </Button>
-              <Button variant="outline" size="sm" className="border-primary-foreground/30 bg-primary-foreground/10 text-primary-foreground hover:bg-primary-foreground/20">
-                <Edit className="mr-1.5 h-3.5 w-3.5" /> Edit Profile
-              </Button>
-            </div>
+          <div className="flex items-start justify-end gap-2">
+            <Button variant="outline" size="sm" className="border-primary-foreground/30 bg-primary-foreground/10 text-primary-foreground hover:bg-primary-foreground/20 text-xs md:text-sm">
+              <Share2 className="mr-1.5 h-3.5 w-3.5" /> Share
+            </Button>
+            <Button variant="outline" size="sm" className="border-primary-foreground/30 bg-primary-foreground/10 text-primary-foreground hover:bg-primary-foreground/20 text-xs md:text-sm">
+              <Edit className="mr-1.5 h-3.5 w-3.5" /> Edit
+            </Button>
           </div>
         </div>
-        <div className="absolute -bottom-14 left-8 z-20 h-28 w-28 overflow-hidden rounded-full border-4 border-card shadow-lg">
+        <div className="absolute -bottom-12 md:-bottom-14 left-4 md:left-8 z-20 h-24 w-24 md:h-28 md:w-28 overflow-hidden rounded-full border-4 border-card shadow-lg">
           <img src={member.avatar} alt={member.name} className="h-full w-full object-cover" />
         </div>
       </div>
 
       <div className="grid gap-6 lg:grid-cols-3">
         {/* Left Column */}
-        <div className="space-y-6 lg:col-span-2">
-          <Card className="p-6">
-            <h1 className="font-heading text-2xl font-bold">{member.name}</h1>
-            <p className="mt-1 text-muted-foreground">{member.headline}</p>
-            <div className="mt-3 flex flex-wrap items-center gap-4 text-sm text-muted-foreground">
+        <div className="space-y-4 md:space-y-6 lg:col-span-2">
+          <Card className="p-4 md:p-6">
+            <h1 className="font-heading text-xl md:text-2xl font-bold">{member.name}</h1>
+            <p className="mt-1 text-sm text-muted-foreground">{member.headline}</p>
+            <div className="mt-3 flex flex-wrap items-center gap-2 md:gap-4 text-xs md:text-sm text-muted-foreground">
               <span className="flex items-center gap-1"><MapPin className="h-3.5 w-3.5" />{member.location}</span>
               <span className="flex items-center gap-1"><Calendar className="h-3.5 w-3.5" />Joined {member.joined}</span>
               <Badge variant="default">{member.tier} Tier</Badge>
             </div>
-            <p className="mt-4 text-sm leading-relaxed text-foreground/80">{member.bio}</p>
-            <div className="mt-4 flex flex-wrap gap-3 text-sm text-muted-foreground">
+            <p className="mt-3 md:mt-4 text-sm leading-relaxed text-foreground/80">{member.bio}</p>
+            <div className="mt-3 md:mt-4 flex flex-wrap gap-2 md:gap-3 text-xs md:text-sm text-muted-foreground">
               <span className="flex items-center gap-1"><Mail className="h-3.5 w-3.5" />{member.email}</span>
               <span className="flex items-center gap-1"><Phone className="h-3.5 w-3.5" />{member.phone}</span>
               <span className="flex items-center gap-1"><Globe className="h-3.5 w-3.5" />{member.website}</span>
@@ -108,65 +105,57 @@ const MemberProfile = () => {
             </div>
           </Card>
 
-          {/* Experience */}
-          <Card className="p-6">
-            <h2 className="mb-4 flex items-center gap-2 font-heading text-lg font-semibold">
+          <Card className="p-4 md:p-6">
+            <h2 className="mb-3 md:mb-4 flex items-center gap-2 font-heading text-base md:text-lg font-semibold">
               <Briefcase className="h-5 w-5 text-primary" /> Experience
             </h2>
-            <div className="space-y-5">
+            <div className="space-y-4 md:space-y-5">
               <div>
-                <p className="font-medium">{member.currentJob.title}</p>
-                <p className="text-sm text-muted-foreground">{member.currentJob.company} · {member.currentJob.duration}</p>
+                <p className="font-medium text-sm md:text-base">{member.currentJob.title}</p>
+                <p className="text-xs md:text-sm text-muted-foreground">{member.currentJob.company} · {member.currentJob.duration}</p>
                 <p className="text-xs text-muted-foreground">{member.currentJob.location}</p>
               </div>
               {member.previousJobs.map((job, i) => (
                 <div key={i}>
-                  <Separator className="mb-5" />
-                  <p className="font-medium">{job.title}</p>
-                  <p className="text-sm text-muted-foreground">{job.company} · {job.duration}</p>
+                  <Separator className="mb-4 md:mb-5" />
+                  <p className="font-medium text-sm md:text-base">{job.title}</p>
+                  <p className="text-xs md:text-sm text-muted-foreground">{job.company} · {job.duration}</p>
                   <p className="text-xs text-muted-foreground">{job.location}</p>
                 </div>
               ))}
             </div>
           </Card>
 
-          {/* Education */}
-          <Card className="p-6">
-            <h2 className="mb-4 flex items-center gap-2 font-heading text-lg font-semibold">
+          <Card className="p-4 md:p-6">
+            <h2 className="mb-3 md:mb-4 flex items-center gap-2 font-heading text-base md:text-lg font-semibold">
               <GraduationCap className="h-5 w-5 text-primary" /> Education
             </h2>
-            <div className="space-y-4">
+            <div className="space-y-3 md:space-y-4">
               {member.education.map((edu, i) => (
                 <div key={i}>
-                  {i > 0 && <Separator className="mb-4" />}
-                  <p className="font-medium">{edu.school}</p>
-                  <p className="text-sm text-muted-foreground">{edu.degree} · {edu.year}</p>
+                  {i > 0 && <Separator className="mb-3 md:mb-4" />}
+                  <p className="font-medium text-sm md:text-base">{edu.school}</p>
+                  <p className="text-xs md:text-sm text-muted-foreground">{edu.degree} · {edu.year}</p>
                 </div>
               ))}
             </div>
           </Card>
 
-          {/* Skills & Interests */}
-          <Card className="p-6">
-            <h2 className="mb-3 font-heading text-lg font-semibold">Skills</h2>
-            <div className="flex flex-wrap gap-2">
-              {member.skills.map((s) => (
-                <Badge key={s} variant="secondary">{s}</Badge>
-              ))}
+          <Card className="p-4 md:p-6">
+            <h2 className="mb-3 font-heading text-base md:text-lg font-semibold">Skills</h2>
+            <div className="flex flex-wrap gap-1.5 md:gap-2">
+              {member.skills.map((s) => <Badge key={s} variant="secondary" className="text-xs">{s}</Badge>)}
             </div>
-            <Separator className="my-5" />
-            <h2 className="mb-3 font-heading text-lg font-semibold">Interests</h2>
-            <div className="flex flex-wrap gap-2">
-              {member.interests.map((i) => (
-                <Badge key={i} variant="outline">{i}</Badge>
-              ))}
+            <Separator className="my-4 md:my-5" />
+            <h2 className="mb-3 font-heading text-base md:text-lg font-semibold">Interests</h2>
+            <div className="flex flex-wrap gap-1.5 md:gap-2">
+              {member.interests.map((i) => <Badge key={i} variant="outline" className="text-xs">{i}</Badge>)}
             </div>
           </Card>
 
-          {/* Custom Fields */}
-          <Card className="p-6">
-            <h2 className="mb-4 font-heading text-lg font-semibold">Custom Profile Fields</h2>
-            <div className="grid gap-3 sm:grid-cols-2">
+          <Card className="p-4 md:p-6">
+            <h2 className="mb-3 md:mb-4 font-heading text-base md:text-lg font-semibold">Custom Profile Fields</h2>
+            <div className="grid gap-2 md:gap-3 grid-cols-1 sm:grid-cols-2">
               {Object.entries(member.customFields).map(([key, value]) => (
                 <div key={key} className="rounded-lg bg-muted p-3">
                   <p className="text-xs font-medium text-muted-foreground">{key}</p>
@@ -178,14 +167,13 @@ const MemberProfile = () => {
         </div>
 
         {/* Right Column */}
-        <div className="space-y-6">
-          {/* HomeDollars & Tier */}
-          <Card className="p-6">
-            <h2 className="mb-3 flex items-center gap-2 font-heading text-lg font-semibold">
+        <div className="space-y-4 md:space-y-6">
+          <Card className="p-4 md:p-6">
+            <h2 className="mb-3 flex items-center gap-2 font-heading text-base md:text-lg font-semibold">
               <DollarSign className="h-5 w-5 text-accent" /> HomeDollars
             </h2>
             <div className="text-center">
-              <p className="font-heading text-4xl font-bold text-primary">HD {member.homeDollars.toLocaleString()}</p>
+              <p className="font-heading text-3xl md:text-4xl font-bold text-primary">HD {member.homeDollars.toLocaleString()}</p>
               <p className="text-sm text-muted-foreground">Lifetime Earned</p>
             </div>
             <div className="mt-4">
@@ -207,13 +195,12 @@ const MemberProfile = () => {
             </div>
           </Card>
 
-          {/* Home Savings Goal */}
-          <Card className="p-6">
-            <h2 className="mb-3 flex items-center gap-2 font-heading text-lg font-semibold">
+          <Card className="p-4 md:p-6">
+            <h2 className="mb-3 flex items-center gap-2 font-heading text-base md:text-lg font-semibold">
               <Home className="h-5 w-5 text-primary" /> Home Savings Goal
             </h2>
             <div className="text-center">
-              <p className="font-heading text-2xl font-bold">HD {member.currentSavings.toLocaleString()}</p>
+              <p className="font-heading text-xl md:text-2xl font-bold">HD {member.currentSavings.toLocaleString()}</p>
               <p className="text-sm text-muted-foreground">of HD {member.savingsGoal.toLocaleString()} goal</p>
             </div>
             <Progress className="mt-3" value={savingsPercent} />
@@ -225,24 +212,22 @@ const MemberProfile = () => {
             </div>
           </Card>
 
-          {/* Recent Activity */}
-          <Card className="p-6">
-            <h2 className="mb-4 flex items-center gap-2 font-heading text-lg font-semibold">
+          <Card className="p-4 md:p-6">
+            <h2 className="mb-3 md:mb-4 flex items-center gap-2 font-heading text-base md:text-lg font-semibold">
               <TrendingUp className="h-5 w-5 text-primary" /> Recent Activity
             </h2>
             <div className="space-y-3">
               {member.recentActivity.map((a, i) => (
                 <div key={i} className="border-l-2 border-primary/30 pl-3">
-                  <p className="text-sm">{a.action}</p>
+                  <p className="text-xs md:text-sm">{a.action}</p>
                   <p className="text-xs text-muted-foreground">{a.date}</p>
                 </div>
               ))}
             </div>
           </Card>
 
-          {/* Achievements */}
-          <Card className="p-6">
-            <h2 className="mb-3 flex items-center gap-2 font-heading text-lg font-semibold">
+          <Card className="p-4 md:p-6">
+            <h2 className="mb-3 flex items-center gap-2 font-heading text-base md:text-lg font-semibold">
               <Award className="h-5 w-5 text-accent" /> Achievements
             </h2>
             <div className="grid grid-cols-3 gap-2 text-center">
