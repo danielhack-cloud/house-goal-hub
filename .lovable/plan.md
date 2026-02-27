@@ -1,43 +1,46 @@
 
 
-## Plan: Add Camera Capture and Push Notification Support
+## Plan: Full Mobile Optimization + Camera Button
 
-### Important Context
-
-Capacitor's native plugins (Camera, Push Notifications) require native code that runs on iOS/Android devices. The JavaScript/TypeScript integration code can be added here in Lovable, but these features will **only work when running the app on a real device or emulator** after exporting to GitHub and building with Xcode/Android Studio. They will gracefully fall back in the web preview.
+The core issue: the sidebar is a fixed 256px (`w-64`) column that never collapses, pushing content off-screen on mobile. Every page using `DashboardLayout` inherits this problem.
 
 ### Steps
 
-1. **Install Capacitor plugins** -- Add `@capacitor/camera` and `@capacitor/push-notifications` packages.
+1. **Rebuild DashboardLayout with responsive sidebar**
+   - On mobile (`< md`): hide sidebar, show a top header bar with hamburger menu icon + logo
+   - Sidebar opens as a slide-over sheet/drawer on mobile tap
+   - On desktop (`>= md`): keep the current fixed sidebar behavior
+   - Main content: `ml-64` only on `md+`, full-width on mobile with appropriate padding (`p-4` instead of `p-8`)
 
-2. **Create a camera utility hook** (`src/hooks/use-camera.ts`) -- A hook that detects whether the Capacitor Camera plugin is available (native app) vs web, and provides a `takePhoto()` function. On native, it opens the device camera directly. On web, it falls back to the existing file input.
+2. **Update AppSidebar for mobile drawer behavior**
+   - Accept an `open` + `onClose` prop
+   - Wrap in a sheet/overlay on mobile, fixed sidebar on desktop
+   - Add close button and backdrop for mobile drawer
 
-3. **Update Transactions page with camera button** -- Add a "Take Photo" button (with Camera icon) next to the existing upload area on the receipt form. When tapped on a native device, it launches the camera; the captured photo feeds directly into the existing `handleFile` / `parseReceipt` flow.
+3. **Mobile-optimize Transactions page**
+   - Stack the two cards vertically on mobile (already `md:grid-cols-2`, should work)
+   - Add a prominent "Take Photo" camera button that works on both native (Capacitor camera) and web (falls back to file input with `capture="environment"`)
+   - Make the transaction history table horizontally scrollable on mobile, or convert to card-based layout
+   - Increase touch target sizes on form inputs and buttons
 
-4. **Create push notifications utility** (`src/hooks/use-push-notifications.ts`) -- A hook that:
-   - Requests notification permission on native devices
-   - Registers for push notifications and retrieves the device token
-   - Saves the token to a `push_tokens` table in the database (linked to user ID)
-   - Listens for incoming notifications
+4. **Mobile-optimize Dashboard (Index) page**
+   - Header: stack title and "Shop on Amazon" button vertically on mobile
+   - Make transaction table scrollable on small screens
 
-5. **Create `push_tokens` database table** -- Migration to store device tokens with columns: `id`, `user_id`, `token`, `platform` (ios/android), `created_at`. Includes RLS policies so users can only manage their own tokens.
+5. **Mobile-optimize remaining pages** (Rewards, Jobs, LiveFeed, Members)
+   - Ensure grids collapse properly on small screens
+   - Jobs: stack apply/bookmark buttons below job info on mobile
+   - Members table: horizontal scroll wrapper
 
-6. **Integrate push notification registration** -- Call the registration hook from the app layout so tokens are saved when users log in on a native device.
-
-7. **Create a backend function** (`send-notification`) -- An edge function that can send push notifications via Apple/Google services. This will be scaffolded but will require APNs/FCM credentials to be configured later when you're ready to deploy.
+6. **Add safe area insets for native app**
+   - Add `env(safe-area-inset-*)` padding in CSS for notched devices
+   - Apply to the top header bar and bottom of sidebar
 
 ### Technical Details
 
-- `@capacitor/camera` uses the native camera API on iOS/Android, returns a base64 image that plugs directly into the existing receipt parsing pipeline
-- `@capacitor/push-notifications` handles permission prompts, token registration, and notification listeners
-- Both plugins detect their runtime environment -- they no-op gracefully in web browsers
-- Push notifications require additional setup after export: APNs key for iOS (from Apple Developer account), FCM server key for Android (from Firebase Console)
-- The `capacitor.config.ts` may need plugin-specific configuration added
-
-### Post-Implementation: What You'll Need to Do Locally
-
-After exporting to GitHub and building:
-1. `npx cap sync` to sync the new plugins to native platforms
-2. For push notifications: configure APNs (iOS) and FCM (Android) credentials
-3. Test camera capture on a physical device or emulator
+- The mobile sidebar will use the existing shadcn `Sheet` component for the slide-over drawer
+- `useIsMobile()` hook already exists at 768px breakpoint and will be used for conditional rendering
+- Camera button on Transactions: on native, uses existing `useCamera` hook; on web, uses `<input capture="environment">` to open the phone camera directly from the browser
+- Safe area CSS: `padding-top: env(safe-area-inset-top)` added to the layout wrapper and `viewport-fit=cover` meta tag in `index.html`
+- All table-based views get `overflow-x-auto` wrappers on mobile
 
