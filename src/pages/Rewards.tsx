@@ -24,7 +24,7 @@ const Rewards = () => {
       <div className="mb-8">
         <h1 className="font-heading text-3xl font-bold">HomeDollars</h1>
         <p className="mt-1 text-muted-foreground">
-          Earn 1 HomeDollar for every $1 spent on Amazon. Save toward your dream home.
+          Earn 1 HomeDollar for every $1 you spend — anywhere you shop. Save toward your dream home.
         </p>
       </div>
 
@@ -41,8 +41,8 @@ const Rewards = () => {
         <div className="mt-4 grid gap-4 sm:grid-cols-3">
           <div className="rounded-lg bg-muted p-4 text-center">
             <p className="text-2xl">🛒</p>
-            <p className="mt-2 font-semibold">Shop on Amazon</p>
-            <p className="mt-1 text-sm text-muted-foreground">Use our link or submit receipts</p>
+            <p className="mt-2 font-semibold">Shop Anywhere</p>
+            <p className="mt-1 text-sm text-muted-foreground">Any store, any purchase counts</p>
           </div>
           <div className="rounded-lg bg-muted p-4 text-center">
             <p className="text-2xl">💰</p>

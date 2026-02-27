@@ -34,9 +34,9 @@ const Index = () => {
           </p>
         </div>
         <Button size="lg" className="w-full sm:w-auto" asChild>
-          <a href="https://www.amazon.com/?tag=homedollars-20" target="_blank" rel="noopener noreferrer">
+          <a href="/transactions">
             <ShoppingCart className="mr-2 h-4 w-4" />
-            Shop on Amazon
+            Submit a Purchase
           </a>
         </Button>
       </div>
@@ -60,7 +60,7 @@ const Index = () => {
         </div>
         <Progress className="mt-4" value={goalPercent} />
         <p className="mt-2 text-xs text-muted-foreground">
-          Every $1 you spend on Amazon earns 1 HomeDollar toward your down payment.
+          Every $1 you spend earns 1 HomeDollar toward your down payment.
         </p>
       </Card>
 
@@ -68,7 +68,7 @@ const Index = () => {
       <div className="mt-6 md:mt-8 rounded-xl border bg-card shadow-sm">
         <div className="border-b p-4 md:p-6">
           <h2 className="font-heading text-lg md:text-xl font-semibold text-card-foreground">Recent Transactions</h2>
-          <p className="text-sm text-muted-foreground">Your latest Amazon purchases</p>
+          <p className="text-sm text-muted-foreground">Your latest purchases</p>
         </div>
 
         {/* Mobile card layout */}
