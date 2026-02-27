@@ -195,7 +195,7 @@ const Transactions = () => {
       <div className="mb-6 md:mb-8">
         <h1 className="font-heading text-2xl md:text-3xl font-bold">Transactions</h1>
         <p className="mt-1 text-sm md:text-base text-muted-foreground">
-          Shop on Amazon and earn 1 HomeDollar for every $1 spent
+          Earn 1 HomeDollar for every $1 you spend — anywhere you shop
         </p>
       </div>
 
@@ -219,26 +219,34 @@ const Transactions = () => {
       </div>
 
       <div className="grid gap-6 md:grid-cols-2">
-        {/* Shop via Link */}
+        {/* How it works */}
         <Card>
           <CardHeader className="p-4 md:p-6">
             <CardTitle className="flex items-center gap-2 text-base md:text-lg">
               <ShoppingCart className="h-5 w-5 text-primary" />
-              Shop on Amazon
+              Shop Anywhere
             </CardTitle>
             <CardDescription className="text-xs md:text-sm">
-              Use our link to shop. Purchases are automatically tracked.
+              Every $1 you spend earns 1 HomeDollar. Just submit your receipt.
             </CardDescription>
           </CardHeader>
-          <CardContent className="p-4 pt-0 md:p-6 md:pt-0">
-            <Button size="lg" className="w-full" asChild>
-              <a href="https://www.amazon.com/?tag=homedollars-20" target="_blank" rel="noopener noreferrer">
-                <ExternalLink className="mr-2 h-4 w-4" />
-                Shop Now on Amazon
-              </a>
-            </Button>
-            <p className="mt-3 text-xs text-muted-foreground text-center">
-              Opens Amazon.com — tracked via our affiliate link.
+          <CardContent className="p-4 pt-0 md:p-6 md:pt-0 space-y-3">
+            <div className="grid grid-cols-3 gap-2 text-center">
+              <div className="rounded-lg bg-muted p-3">
+                <p className="text-lg">🛒</p>
+                <p className="mt-1 text-xs font-medium">Shop</p>
+              </div>
+              <div className="rounded-lg bg-muted p-3">
+                <p className="text-lg">📸</p>
+                <p className="mt-1 text-xs font-medium">Snap Receipt</p>
+              </div>
+              <div className="rounded-lg bg-muted p-3">
+                <p className="text-lg">🏠</p>
+                <p className="mt-1 text-xs font-medium">Earn HD</p>
+              </div>
+            </div>
+            <p className="text-xs text-muted-foreground text-center">
+              Works with any store — groceries, electronics, clothing, and more.
             </p>
           </CardContent>
         </Card>
@@ -376,7 +384,7 @@ const Transactions = () => {
           </div>
         ) : filtered.length === 0 ? (
           <div className="p-8 md:p-12 text-center text-muted-foreground">
-            No transactions yet. Shop on Amazon or submit a receipt to get started!
+            No transactions yet. Submit a receipt from any store to get started!
           </div>
         ) : (
           <>

@@ -47,8 +47,8 @@ const Landing = () => {
   const steps = [
     {
       icon: ShoppingCart,
-      title: "Shop on Amazon",
-      description: "Use your unique HomeDollars link to shop on Amazon like you normally do.",
+      title: "Shop Anywhere",
+      description: "Shop at your favorite stores — online or in person. Every purchase counts.",
     },
     {
       icon: Receipt,
@@ -107,7 +107,7 @@ const Landing = () => {
             <span className="text-primary">Down Payment</span>
           </h1>
           <p className="mx-auto mt-6 max-w-2xl text-lg text-primary-foreground/80">
-            Shop on Amazon like you normally do. Every dollar you spend earns HomeDollars
+            Shop anywhere you normally do. Every dollar you spend earns HomeDollars
             that count toward buying your first home. It's that simple.
           </p>
           <div className="mt-10 flex flex-col items-center gap-4 sm:flex-row sm:justify-center">
@@ -217,7 +217,7 @@ const Landing = () => {
                   Transaction Tracking
                 </h3>
                 <p className="mt-2 text-sm text-muted-foreground">
-                  Every Amazon purchase is logged automatically. Upload receipts for additional earnings — it's all transparent.
+                  Every purchase is logged when you submit a receipt. It's all transparent and easy to track.
                 </p>
               </div>
             </div>

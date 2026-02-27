@@ -46,9 +46,9 @@ const MemberProfile = () => {
     skills: ["Digital Marketing", "SEO", "Content Strategy", "Analytics", "Budget Planning", "Real Estate Research"],
     interests: ["Home Buying", "Personal Finance", "Cooking", "Hiking", "Travel"],
     recentActivity: [
-      { action: "Earned 87 HD from Amazon purchase ($87.42)", date: "Feb 22, 2026" },
+      { action: "Earned 87 HD from a $87.42 purchase", date: "Feb 22, 2026" },
       { action: "Submitted receipt — 135 HD pending verification", date: "Feb 20, 2026" },
-      { action: "Earned 52 HD from Amazon purchase ($52.30)", date: "Feb 18, 2026" },
+      { action: "Earned 52 HD from a $52.30 purchase", date: "Feb 18, 2026" },
       { action: "Referred Marcus Chen – earned 500 bonus HD", date: "Feb 15, 2026" },
     ],
     customFields: {
