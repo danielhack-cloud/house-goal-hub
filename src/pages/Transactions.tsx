@@ -217,7 +217,7 @@ const Transactions = () => {
       <div className="mb-4">
         <Button size="lg" className="w-full gap-2 text-base py-6" onClick={handleCameraCapture} disabled={isParsing}>
           {isParsing ? <Loader2 className="h-5 w-5 animate-spin" /> : <Camera className="h-5 w-5" />}
-          {isParsing ? "Reading your receipt…" : "📸 Snap a Receipt"}
+          {isParsing ? "Reading your receipt…" : "Snap a Receipt"}
         </Button>
         <p className="text-xs text-muted-foreground text-center mt-1.5">Take a photo and we'll auto-track everything</p>
         <input
@@ -231,6 +231,34 @@ const Transactions = () => {
             if (file) handleFile(file);
           }}
         />
+        {/* Receipt preview thumbnail */}
+        {receiptFile && (
+          <div className="mt-3 flex items-center gap-3 rounded-lg border bg-muted/50 p-3">
+            <img
+              src={URL.createObjectURL(receiptFile)}
+              alt="Receipt preview"
+              className="h-16 w-16 rounded-md object-cover border"
+            />
+            <div className="flex-1 min-w-0">
+              <p className="text-sm font-medium truncate">{receiptFile.name}</p>
+              <p className="text-xs text-muted-foreground">
+                {isParsing ? "Parsing…" : submitMutation.isPending ? "Submitting…" : "Ready"}
+              </p>
+            </div>
+            <Button
+              variant="ghost"
+              size="sm"
+              className="text-xs text-muted-foreground"
+              onClick={() => {
+                setReceiptFile(null);
+                if (fileInputRef.current) fileInputRef.current.value = "";
+                if (cameraInputRef.current) cameraInputRef.current.value = "";
+              }}
+            >
+              Remove
+            </Button>
+          </div>
+        )}
       </div>
 
       <div className="grid gap-6 md:grid-cols-2">
@@ -252,7 +280,7 @@ const Transactions = () => {
                 <p className="mt-1 text-xs font-medium">Shop</p>
               </div>
               <div className="rounded-lg bg-muted p-3">
-                <p className="text-lg">📸</p>
+                <p className="text-lg">📷</p>
                 <p className="mt-1 text-xs font-medium">Snap Receipt</p>
               </div>
               <div className="rounded-lg bg-muted p-3">
