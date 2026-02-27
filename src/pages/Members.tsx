@@ -3,6 +3,7 @@ import DashboardLayout from "@/components/DashboardLayout";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Badge } from "@/components/ui/badge";
+import { Card } from "@/components/ui/card";
 import {
   Table, TableBody, TableCell, TableHead, TableHeader, TableRow,
 } from "@/components/ui/table";
@@ -30,14 +31,14 @@ const Members = () => {
   const navigate = useNavigate();
   return (
     <DashboardLayout>
-      <div className="mb-8 flex items-center justify-between">
+      <div className="mb-6 md:mb-8 flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
         <div>
-          <h1 className="font-heading text-3xl font-bold">Members</h1>
-          <p className="mt-1 text-muted-foreground">
+          <h1 className="font-heading text-2xl md:text-3xl font-bold">Members</h1>
+          <p className="mt-1 text-sm md:text-base text-muted-foreground">
             Manage member enrollment and profiles
           </p>
         </div>
-        <Button>
+        <Button className="w-full sm:w-auto">
           <Plus className="mr-2 h-4 w-4" />
           Add Member
         </Button>
@@ -46,15 +47,37 @@ const Members = () => {
       <div className="mb-6 flex items-center gap-3">
         <div className="relative flex-1">
           <Search className="absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-muted-foreground" />
-          <Input placeholder="Search members..." className="pl-10" />
+          <Input placeholder="Search members..." className="pl-10 h-11" />
         </div>
-        <Button variant="outline">
+        <Button variant="outline" className="h-11">
           <Filter className="mr-2 h-4 w-4" />
-          Filters
+          <span className="hidden sm:inline">Filters</span>
         </Button>
       </div>
 
-      <div className="rounded-xl border bg-card shadow-sm">
+      {/* Mobile card layout */}
+      <div className="md:hidden space-y-3">
+        {members.map((member, i) => (
+          <Card
+            key={member.email}
+            className="p-4 cursor-pointer active:bg-muted/50"
+            onClick={() => navigate(`/members/${i + 1}`)}
+          >
+            <div className="flex items-center justify-between mb-1">
+              <span className="font-medium text-sm">{member.name}</span>
+              <Badge variant={tierColors[member.tier] as any} className="text-xs">{member.tier}</Badge>
+            </div>
+            <p className="text-xs text-muted-foreground">{member.email}</p>
+            <div className="flex items-center justify-between mt-2">
+              <span className="text-sm font-semibold text-primary">{member.points.toLocaleString()} HD</span>
+              <Badge variant={member.status === "active" ? "default" : "secondary"} className="text-xs">{member.status}</Badge>
+            </div>
+          </Card>
+        ))}
+      </div>
+
+      {/* Desktop table */}
+      <div className="hidden md:block rounded-xl border bg-card shadow-sm overflow-x-auto">
         <Table>
           <TableHeader>
             <TableRow>
@@ -71,17 +94,9 @@ const Members = () => {
               <TableRow key={member.email} className="cursor-pointer hover:bg-muted/50" onClick={() => navigate(`/members/${i + 1}`)}>
                 <TableCell className="font-medium">{member.name}</TableCell>
                 <TableCell className="text-muted-foreground">{member.email}</TableCell>
-                <TableCell>
-                  <Badge variant={tierColors[member.tier] as any}>
-                    {member.tier}
-                  </Badge>
-                </TableCell>
+                <TableCell><Badge variant={tierColors[member.tier] as any}>{member.tier}</Badge></TableCell>
                 <TableCell>{member.points.toLocaleString()}</TableCell>
-                <TableCell>
-                  <Badge variant={member.status === "active" ? "default" : "secondary"}>
-                    {member.status}
-                  </Badge>
-                </TableCell>
+                <TableCell><Badge variant={member.status === "active" ? "default" : "secondary"}>{member.status}</Badge></TableCell>
                 <TableCell className="text-muted-foreground">{member.joined}</TableCell>
               </TableRow>
             ))}
