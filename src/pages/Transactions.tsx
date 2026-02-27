@@ -67,6 +67,8 @@ const Transactions = () => {
   useEffect(() => { checkNative(); }, [checkNative]);
 
   const handleCameraCapture = async () => {
+    // Reset input so re-selecting same file triggers onChange
+    if (cameraInputRef.current) cameraInputRef.current.value = "";
     if (isNative) {
       const result = await takePhoto();
       if (result) {
@@ -193,6 +195,7 @@ const Transactions = () => {
       setOrderId("");
       setReceiptFile(null);
       if (fileInputRef.current) fileInputRef.current.value = "";
+      if (cameraInputRef.current) cameraInputRef.current.value = "";
     },
     onError: (err: any) => {
       const message = err?.message || "Failed to submit receipt";
