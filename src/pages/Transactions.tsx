@@ -61,6 +61,7 @@ const Transactions = () => {
   const [isParsing, setIsParsing] = useState(false);
   const [isDragging, setIsDragging] = useState(false);
   const [celebrationData, setCelebrationData] = useState<{ total: number; hd: number } | null>(null);
+  const [autoSubmitPending, setAutoSubmitPending] = useState(false);
   const { takePhoto, checkNative, isNative } = useCamera();
 
   useEffect(() => { checkNative(); }, [checkNative]);
@@ -115,7 +116,12 @@ const Transactions = () => {
       if (data.orderTotal) setOrderTotal(data.orderTotal);
       if (data.orderId) setOrderId(data.orderId);
 
-      toast({ title: "Receipt parsed!", description: "Fields auto-filled. Please review before submitting." });
+      // If we have enough data, auto-submit
+      if (data.orderDate && data.orderTotal && Number(data.orderTotal) > 0) {
+        setAutoSubmitPending(true);
+      } else {
+        toast({ title: "Receipt parsed!", description: "Some fields need manual entry. Please review." });
+      }
     } catch (err: any) {
       console.error("Parse error:", err);
       toast({ title: "Could not parse receipt", description: "Please fill in the fields manually.", variant: "destructive" });
@@ -123,6 +129,14 @@ const Transactions = () => {
       setIsParsing(false);
     }
   };
+
+  // Auto-submit after parsing fills in the fields
+  useEffect(() => {
+    if (autoSubmitPending && orderDate && orderTotal && receiptFile && !submitMutation.isPending) {
+      setAutoSubmitPending(false);
+      submitMutation.mutate();
+    }
+  }, [autoSubmitPending, orderDate, orderTotal, receiptFile]);
 
   const { data: transactions = [], isLoading } = useQuery({
     queryKey: ["transactions", user?.id],
@@ -199,12 +213,13 @@ const Transactions = () => {
         </p>
       </div>
 
-      {/* Prominent camera button for mobile */}
-      <div className="mb-4 md:hidden">
+      {/* Prominent camera button */}
+      <div className="mb-4">
         <Button size="lg" className="w-full gap-2 text-base py-6" onClick={handleCameraCapture} disabled={isParsing}>
           {isParsing ? <Loader2 className="h-5 w-5 animate-spin" /> : <Camera className="h-5 w-5" />}
-          {isParsing ? "Parsing Receipt…" : "📸 Snap a Receipt"}
+          {isParsing ? "Reading your receipt…" : "📸 Snap a Receipt"}
         </Button>
+        <p className="text-xs text-muted-foreground text-center mt-1.5">Take a photo and we'll auto-track everything</p>
         <input
           ref={cameraInputRef}
           type="file"
@@ -336,19 +351,8 @@ const Transactions = () => {
                 />
               </div>
 
-              {/* Camera button for desktop / native */}
-              <div className="hidden md:block">
-                <Button
-                  type="button"
-                  variant="outline"
-                  className="w-full"
-                  onClick={handleCameraCapture}
-                  disabled={isParsing}
-                >
-                  <Camera className="mr-2 h-4 w-4" />
-                  Take Photo of Receipt
-                </Button>
-              </div>
+
+
 
               <Button className="w-full h-11" type="submit" disabled={submitMutation.isPending || isParsing}>
                 {submitMutation.isPending && <Loader2 className="mr-2 h-4 w-4 animate-spin" />}
