@@ -1,46 +1,65 @@
 
 
-## Plan: Full Mobile Optimization + Camera Button
+## Plan: App-style Bottom Navigation with Three Tabs
 
-The core issue: the sidebar is a fixed 256px (`w-64`) column that never collapses, pushing content off-screen on mobile. Every page using `DashboardLayout` inherits this problem.
+### Overview
 
-### Steps
+Transform the mobile experience from a sidebar/hamburger menu into a native app-style bottom navigation bar with three tabs: **Track** (left), **Capture** (center), **Spend** (right). Desktop keeps the sidebar layout unchanged.
 
-1. **Rebuild DashboardLayout with responsive sidebar**
-   - On mobile (`< md`): hide sidebar, show a top header bar with hamburger menu icon + logo
-   - Sidebar opens as a slide-over sheet/drawer on mobile tap
-   - On desktop (`>= md`): keep the current fixed sidebar behavior
-   - Main content: `ml-64` only on `md+`, full-width on mobile with appropriate padding (`p-4` instead of `p-8`)
+### Architecture
 
-2. **Update AppSidebar for mobile drawer behavior**
-   - Accept an `open` + `onClose` prop
-   - Wrap in a sheet/overlay on mobile, fixed sidebar on desktop
-   - Add close button and backdrop for mobile drawer
+```text
+Bottom Nav:  [ Track ]  [ Capture ]  [ Spend ]
+               /track     /capture     /spend
+```
 
-3. **Mobile-optimize Transactions page**
-   - Stack the two cards vertically on mobile (already `md:grid-cols-2`, should work)
-   - Add a prominent "Take Photo" camera button that works on both native (Capacitor camera) and web (falls back to file input with `capture="environment"`)
-   - Make the transaction history table horizontally scrollable on mobile, or convert to card-based layout
-   - Increase touch target sizes on form inputs and buttons
+- **Track** (`/track`) — Dashboard showing HD balance, savings goals, spending breakdown, recent transactions (merge current Index + Rewards dashboard content)
+- **Capture** (`/capture`) — Streamlined receipt capture screen. Immediately opens camera, shows receipt preview, auto-submits (refactored from current Transactions page)
+- **Spend** (`/spend`) — HD balance display + catalog of redemption options (mortgage, plumber, roof, etc. with fake examples for now)
 
-4. **Mobile-optimize Dashboard (Index) page**
-   - Header: stack title and "Shop on Amazon" button vertically on mobile
-   - Make transaction table scrollable on small screens
+### Files to Create
 
-5. **Mobile-optimize remaining pages** (Rewards, Jobs, LiveFeed, Members)
-   - Ensure grids collapse properly on small screens
-   - Jobs: stack apply/bookmark buttons below job info on mobile
-   - Members table: horizontal scroll wrapper
+1. **`src/components/BottomNav.tsx`** — Fixed bottom navigation bar component
+   - Three icons+labels: Track (LayoutDashboard), Capture (Camera), Spend (Home)
+   - Active state highlighting with primary color pill/background like the reference image
+   - Safe area padding for iOS notch devices
+   - Only renders on mobile
 
-6. **Add safe area insets for native app**
-   - Add `env(safe-area-inset-*)` padding in CSS for notched devices
-   - Apply to the top header bar and bottom of sidebar
+2. **`src/pages/Track.tsx`** — New combined dashboard page
+   - HD balance, lifetime spending, transaction count, tier metrics
+   - Savings goal progress bar
+   - Spending category breakdown (fake data for now)
+   - Recent transactions list
 
-### Technical Details
+3. **`src/pages/Capture.tsx`** — Dedicated camera/receipt page
+   - Large camera button as primary action
+   - Receipt preview thumbnail
+   - Auto-parse + auto-submit flow (extracted from Transactions.tsx)
+   - Celebration dialog on success
+   - Minimal UI — focused on the one action
 
-- The mobile sidebar will use the existing shadcn `Sheet` component for the slide-over drawer
-- `useIsMobile()` hook already exists at 768px breakpoint and will be used for conditional rendering
-- Camera button on Transactions: on native, uses existing `useCamera` hook; on web, uses `<input capture="environment">` to open the phone camera directly from the browser
-- Safe area CSS: `padding-top: env(safe-area-inset-top)` added to the layout wrapper and `viewport-fit=cover` meta tag in `index.html`
-- All table-based views get `overflow-x-auto` wrappers on mobile
+4. **`src/pages/Spend.tsx`** — Redemption marketplace
+   - HD balance display at top
+   - Grid of redemption cards with fake examples:
+     - Mortgage payment ($500 HD)
+     - Plumber service ($150 HD)
+     - Roof repair ($300 HD)
+     - Home insurance ($200 HD)
+     - Landscaping ($100 HD)
+     - Home cleaning ($75 HD)
+   - Each card shows image/icon, title, HD cost, "Redeem" button (non-functional for now)
+
+### Files to Modify
+
+5. **`src/components/DashboardLayout.tsx`** — Add BottomNav on mobile, increase bottom padding to account for nav bar height, remove hamburger menu on mobile
+
+6. **`src/App.tsx`** — Add routes for `/track`, `/capture`, `/spend`; keep existing routes for desktop compatibility
+
+### Design Details
+
+- Bottom nav bar: fixed to bottom, ~64px height, white background, subtle top border/shadow
+- Center "Capture" button slightly larger/elevated with primary color circle (like a FAB)
+- Active tab gets primary color icon + label
+- Inactive tabs are muted gray
+- Safe area insets for iOS home indicator
 
