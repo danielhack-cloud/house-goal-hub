@@ -13,6 +13,9 @@ import Transactions from "./pages/Transactions";
 import Jobs from "./pages/Jobs";
 import LiveFeed from "./pages/LiveFeed";
 import Auth from "./pages/Auth";
+import Track from "./pages/Track";
+import Capture from "./pages/Capture";
+import Spend from "./pages/Spend";
 import NotFound from "./pages/NotFound";
 
 const queryClient = new QueryClient();
@@ -34,6 +37,9 @@ const App = () => (
             <Route path="/feed" element={<LiveFeed />} />
             <Route path="/jobs" element={<Jobs />} />
             <Route path="/auth" element={<Auth />} />
+            <Route path="/track" element={<Track />} />
+            <Route path="/capture" element={<Capture />} />
+            <Route path="/spend" element={<Spend />} />
             <Route path="*" element={<NotFound />} />
           </Routes>
         </BrowserRouter>
