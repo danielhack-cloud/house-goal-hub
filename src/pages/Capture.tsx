@@ -1,8 +1,9 @@
 import { useState, useRef, useEffect } from "react";
-import { useMutation, useQueryClient } from "@tanstack/react-query";
+import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import DashboardLayout from "@/components/DashboardLayout";
 import { Button } from "@/components/ui/button";
-import { Camera, Loader2, PartyPopper } from "lucide-react";
+import { Card } from "@/components/ui/card";
+import { Camera, Loader2, PartyPopper, Receipt, TrendingUp, Zap } from "lucide-react";
 import {
   Dialog, DialogContent, DialogHeader, DialogTitle, DialogDescription,
 } from "@/components/ui/dialog";
@@ -10,7 +11,12 @@ import { supabase } from "@/integrations/supabase/client";
 import { useAuth } from "@/contexts/AuthContext";
 import { toast } from "@/hooks/use-toast";
 import { useCamera } from "@/hooks/use-camera";
-import { z } from "zod";
+
+const tips = [
+  { icon: Receipt, text: "Snap any receipt — groceries, gas, online orders" },
+  { icon: Zap, text: "We auto-read totals so you don't have to type" },
+  { icon: TrendingUp, text: "Every $1 spent = 1 HomeDollar earned" },
+];
 
 const Capture = () => {
   const { user } = useAuth();
@@ -25,6 +31,20 @@ const Capture = () => {
   const [orderTotal, setOrderTotal] = useState("");
   const [orderId, setOrderId] = useState("");
   const [autoSubmitPending, setAutoSubmitPending] = useState(false);
+
+  // Quick stats
+  const { data: recentCount = 0 } = useQuery({
+    queryKey: ["tx-count", user?.id],
+    queryFn: async () => {
+      if (!user) return 0;
+      const { count } = await supabase
+        .from("transactions")
+        .select("*", { count: "exact", head: true })
+        .eq("user_id", user.id);
+      return count || 0;
+    },
+    enabled: !!user,
+  });
 
   useEffect(() => { checkNative(); }, [checkNative]);
 
@@ -108,6 +128,7 @@ const Capture = () => {
       const total = Number(orderTotal);
       setCelebrationData({ total, hd: Math.floor(total) });
       queryClient.invalidateQueries({ queryKey: ["transactions"] });
+      queryClient.invalidateQueries({ queryKey: ["tx-count"] });
       setOrderDate(""); setOrderTotal(""); setOrderId("");
       setReceiptFile(null);
     },
@@ -127,32 +148,38 @@ const Capture = () => {
 
   return (
     <DashboardLayout>
-      <div className="flex flex-col items-center justify-center min-h-[60vh] text-center px-4">
-        <h1 className="font-heading text-2xl font-bold mb-2">Capture Receipt</h1>
-        <p className="text-sm text-muted-foreground mb-8 max-w-xs">
-          Snap a photo of your receipt and we'll auto-track your HomeDollars
+      <div className="flex flex-col items-center justify-center min-h-[50vh] text-center px-4">
+        <h1 className="font-heading text-2xl font-bold mb-1">Capture Receipt</h1>
+        <p className="text-sm text-muted-foreground mb-6 max-w-xs">
+          Snap a photo and we'll auto-track your HomeDollars
         </p>
 
         {/* Camera button */}
         <button
           onClick={handleCameraCapture}
           disabled={isProcessing}
-          className="w-32 h-32 rounded-full bg-primary text-primary-foreground flex items-center justify-center shadow-xl hover:bg-primary/90 transition-all active:scale-95 disabled:opacity-60 mb-6"
+          className="w-28 h-28 rounded-full bg-primary text-primary-foreground flex items-center justify-center shadow-xl hover:bg-primary/90 transition-all active:scale-95 disabled:opacity-60 mb-4 ring-4 ring-primary/20"
         >
           {isProcessing ? (
-            <Loader2 className="h-12 w-12 animate-spin" />
+            <Loader2 className="h-10 w-10 animate-spin" />
           ) : (
-            <Camera className="h-12 w-12" />
+            <Camera className="h-10 w-10" />
           )}
         </button>
 
-        <p className="text-xs text-muted-foreground">
+        <p className="text-xs text-muted-foreground mb-1">
           {isParsing ? "Reading your receipt…" : submitMutation.isPending ? "Submitting…" : "Tap to snap a receipt"}
         </p>
 
+        {recentCount > 0 && (
+          <p className="text-[10px] text-muted-foreground">
+            {recentCount} receipt{recentCount !== 1 ? "s" : ""} submitted so far
+          </p>
+        )}
+
         {/* Receipt preview */}
         {receiptFile && !isProcessing && (
-          <div className="mt-6 flex items-center gap-3 rounded-lg border bg-muted/50 p-3">
+          <div className="mt-4 flex items-center gap-3 rounded-lg border bg-muted/50 p-3">
             <img
               src={URL.createObjectURL(receiptFile)}
               alt="Receipt preview"
@@ -176,6 +203,21 @@ const Capture = () => {
             if (file) handleFile(file);
           }}
         />
+      </div>
+
+      {/* Tips section */}
+      <div className="mt-2 space-y-2 px-2">
+        {tips.map((tip, i) => {
+          const Icon = tip.icon;
+          return (
+            <Card key={i} className="flex items-center gap-3 p-3">
+              <div className="w-8 h-8 rounded-full bg-primary/10 flex items-center justify-center shrink-0">
+                <Icon className="h-4 w-4 text-primary" />
+              </div>
+              <p className="text-xs text-muted-foreground">{tip.text}</p>
+            </Card>
+          );
+        })}
       </div>
 
       {/* Celebration dialog */}
