@@ -33,6 +33,7 @@ const Partners = () => {
   const { toast } = useToast();
   const [email, setEmail] = useState("");
   const [bizName, setBizName] = useState("");
+  const [phone, setPhone] = useState("");
   const [services, setServices] = useState("");
   const [submitting, setSubmitting] = useState(false);
   const [submitted, setSubmitted] = useState(false);
@@ -54,14 +55,14 @@ const Partners = () => {
   };
 
   return (
-    <div className="min-h-screen bg-background">
+    <div className="min-h-screen bg-foreground text-background">
       {/* Nav */}
-      <header className="sticky top-0 z-50 border-b border-border bg-background/80 backdrop-blur-md">
+      <header className="sticky top-0 z-50 border-b border-border/20 bg-foreground/95 backdrop-blur-md">
         <div className="mx-auto flex h-16 max-w-6xl items-center justify-between px-6">
           <Link to="/" className="flex items-center gap-2">
-            <img src="/images/homedollars-logo.png" alt="HomeDollars" className="h-8 mix-blend-multiply" />
+            <img src="/images/homedollars-logo.png" alt="HomeDollars" className="h-8 mix-blend-screen" />
           </Link>
-          <Button variant="ghost" size="sm" asChild>
+          <Button variant="ghost" size="sm" className="text-background/70 hover:text-background hover:bg-background/10" asChild>
             <Link to="/"><ArrowLeft className="mr-2 h-4 w-4" /> Back to Home</Link>
           </Button>
         </div>
@@ -86,22 +87,23 @@ const Partners = () => {
         </div>
       </section>
 
-      {/* Application form - moved to top */}
-      <section className="py-20 bg-card border-b border-border">
+      {/* Application form */}
+      <section className="py-20 bg-foreground border-b border-border/20">
         <div className="mx-auto max-w-lg px-6 text-center">
-          <h2 className="font-heading text-3xl font-bold sm:text-4xl">Apply Now</h2>
-          <p className="mt-3 text-muted-foreground">Join our partner network — approval takes under 48 hours.</p>
+          <h2 className="font-heading text-3xl font-bold sm:text-4xl text-background">Apply Now</h2>
+          <p className="mt-3 text-background/60">Join our partner network — approval takes under 48 hours.</p>
           {submitted ? (
             <div className="mt-10 flex flex-col items-center gap-3">
               <CheckCircle2 className="h-12 w-12 text-primary" />
-              <p className="font-heading text-xl font-semibold">Application Received!</p>
-              <p className="text-sm text-muted-foreground">We'll review your info and reach out within 48 hours.</p>
+              <p className="font-heading text-xl font-semibold text-background">Application Received!</p>
+              <p className="text-sm text-background/60">We'll review your info and reach out within 48 hours.</p>
             </div>
           ) : (
             <form onSubmit={handleSubmit} className="mt-10 space-y-3 text-left">
-              <Input placeholder="Business name" value={bizName} onChange={(e) => setBizName(e.target.value)} required />
-              <Input type="email" placeholder="Business email" value={email} onChange={(e) => setEmail(e.target.value)} required />
-              <Textarea placeholder="What services do you offer or what do you sell?" value={services} onChange={(e) => setServices(e.target.value)} rows={3} required />
+              <Input placeholder="Business name" value={bizName} onChange={(e) => setBizName(e.target.value)} required className="bg-background/10 border-background/20 text-background placeholder:text-background/40 focus-visible:ring-primary" />
+              <Input type="email" placeholder="Business email" value={email} onChange={(e) => setEmail(e.target.value)} required className="bg-background/10 border-background/20 text-background placeholder:text-background/40 focus-visible:ring-primary" />
+              <Input type="tel" inputMode="tel" autoComplete="tel" placeholder="Phone number" value={phone} onChange={(e) => setPhone(e.target.value)} className="bg-background/10 border-background/20 text-background placeholder:text-background/40 focus-visible:ring-primary" />
+              <Textarea placeholder="What services do you offer or what do you sell?" value={services} onChange={(e) => setServices(e.target.value)} rows={3} required className="bg-background/10 border-background/20 text-background placeholder:text-background/40 focus-visible:ring-primary" />
               <Button type="submit" className="w-full" size="lg" disabled={submitting}>
                 {submitting ? "Submitting..." : "Submit Partner Application"}
               </Button>
@@ -111,32 +113,32 @@ const Partners = () => {
       </section>
 
       {/* Benefits */}
-      <section className="py-20">
+      <section className="py-20 bg-foreground">
         <div className="mx-auto max-w-6xl px-6">
           <div className="text-center mb-14">
-            <h2 className="font-heading text-3xl font-bold sm:text-4xl">Why Partner With HomeDollars?</h2>
-            <p className="mt-3 text-muted-foreground">Everything you gain — nothing you lose.</p>
+            <h2 className="font-heading text-3xl font-bold sm:text-4xl text-background">Why Partner With HomeDollars?</h2>
+            <p className="mt-3 text-background/60">Everything you gain — nothing you lose.</p>
           </div>
           <div className="grid gap-6 sm:grid-cols-2 lg:grid-cols-4">
             {benefits.map((b) => (
-              <Card key={b.title} className="p-6 hover:shadow-lg transition-shadow">
-                <div className="mb-4 flex h-11 w-11 items-center justify-center rounded-xl bg-primary/10">
+              <div key={b.title} className="rounded-xl border border-background/10 bg-background/5 p-6 hover:bg-background/10 transition-colors">
+                <div className="mb-4 flex h-11 w-11 items-center justify-center rounded-xl bg-primary/20">
                   <b.icon className="h-5 w-5 text-primary" />
                 </div>
-                <h3 className="font-heading text-base font-semibold">{b.title}</h3>
-                <p className="mt-2 text-sm text-muted-foreground leading-relaxed">{b.desc}</p>
-              </Card>
+                <h3 className="font-heading text-base font-semibold text-background">{b.title}</h3>
+                <p className="mt-2 text-sm text-background/60 leading-relaxed">{b.desc}</p>
+              </div>
             ))}
           </div>
         </div>
       </section>
 
       {/* How it works */}
-      <section className="py-20 bg-card border-y border-border">
+      <section className="py-20 bg-primary/10 border-y border-background/10">
         <div className="mx-auto max-w-4xl px-6">
           <div className="text-center mb-14">
-            <h2 className="font-heading text-3xl font-bold sm:text-4xl">How It Works</h2>
-            <p className="mt-3 text-muted-foreground">Three steps to start growing your business with HomeDollars.</p>
+            <h2 className="font-heading text-3xl font-bold sm:text-4xl text-background">How It Works</h2>
+            <p className="mt-3 text-background/60">Three steps to start growing your business with HomeDollars.</p>
           </div>
           <div className="grid gap-8 md:grid-cols-3">
             {howItWorks.map((s) => (
@@ -144,8 +146,8 @@ const Partners = () => {
                 <div className="mx-auto mb-4 flex h-12 w-12 items-center justify-center rounded-full bg-primary font-heading text-lg font-bold text-primary-foreground">
                   {s.step}
                 </div>
-                <h3 className="font-heading text-lg font-semibold">{s.title}</h3>
-                <p className="mt-2 text-sm text-muted-foreground leading-relaxed">{s.desc}</p>
+                <h3 className="font-heading text-lg font-semibold text-background">{s.title}</h3>
+                <p className="mt-2 text-sm text-background/60 leading-relaxed">{s.desc}</p>
               </div>
             ))}
           </div>
@@ -153,13 +155,13 @@ const Partners = () => {
       </section>
 
       {/* Footer */}
-      <footer className="border-t border-border bg-card py-8">
-        <div className="mx-auto max-w-6xl px-6 flex flex-col sm:flex-row items-center justify-between gap-4 text-sm text-muted-foreground">
+      <footer className="border-t border-background/10 bg-foreground py-8">
+        <div className="mx-auto max-w-6xl px-6 flex flex-col sm:flex-row items-center justify-between gap-4 text-sm text-background/50">
           <p>© 2026 HomeDollars.com — All Rights Reserved.</p>
           <div className="flex gap-6">
-            <Link to="/" className="hover:text-foreground transition-colors">Home</Link>
-            <a href="#" className="hover:text-foreground transition-colors">Privacy</a>
-            <a href="#" className="hover:text-foreground transition-colors">Terms</a>
+            <Link to="/" className="hover:text-background transition-colors">Home</Link>
+            <a href="#" className="hover:text-background transition-colors">Privacy</a>
+            <a href="#" className="hover:text-background transition-colors">Terms</a>
           </div>
         </div>
       </footer>
