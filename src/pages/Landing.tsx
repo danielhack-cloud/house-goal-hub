@@ -46,7 +46,7 @@ const Landing = () => {
           </div>
           <div className="flex items-center gap-3">
             {user && (
-              <Button variant="outline" className="border-background/20 text-background hover:bg-background/10" asChild>
+              <Button variant="outline" className="border-primary text-primary hover:bg-primary/10" asChild>
                 <Link to="/track">
                   Dashboard <ArrowRight className="ml-2 h-4 w-4" />
                 </Link>
