@@ -30,8 +30,8 @@ const AppSidebar = ({ onNavigate }: AppSidebarProps) => {
 
   return (
     <aside className="flex h-full w-64 flex-col bg-sidebar text-sidebar-foreground md:fixed md:left-0 md:top-0 md:z-40 md:h-screen">
-      <div className="hidden md:flex h-16 items-center border-b border-sidebar-border px-4">
-        <img src="/images/homedollars-logo.png" alt="HomeDollars" className="h-8" style={{ mixBlendMode: 'screen' }} />
+      <div className="hidden md:flex h-16 items-center border-b border-sidebar-border px-4 bg-white">
+        <img src="/images/homedollars-logo.png" alt="HomeDollars" className="h-8" />
       </div>
 
       <nav className="flex-1 space-y-1 px-3 py-4 overflow-y-auto">
