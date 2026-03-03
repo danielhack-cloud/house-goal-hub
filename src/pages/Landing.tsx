@@ -39,24 +39,24 @@ const Landing = () => {
   return (
     <div className="min-h-screen bg-background">
       {/* Nav */}
-      <header className="sticky top-0 z-50 border-b border-border/20 bg-foreground/95 backdrop-blur-md">
+      <header className="sticky top-0 z-50 border-b border-border/20 bg-background backdrop-blur-md">
         <div className="mx-auto flex h-16 max-w-6xl items-center justify-between px-6">
           <div className="flex items-center gap-2">
-            <img src="/images/homedollars-logo.png" alt="HomeDollars" className="h-8 mix-blend-screen" />
+            <img src="/images/homedollars-logo.png" alt="HomeDollars" className="h-8" />
           </div>
           <div className="flex items-center gap-3">
             {user && (
-              <Button variant="outline" className="border-primary text-primary hover:bg-primary/10" asChild>
+              <Button className="bg-foreground text-primary hover:bg-foreground/90" asChild>
                 <Link to="/track">
                   Dashboard <ArrowRight className="ml-2 h-4 w-4" />
                 </Link>
               </Button>
             )}
-            <Button variant="ghost" className="text-background/70 hover:text-background hover:bg-background/10" asChild>
+            <Button className="bg-foreground text-background hover:bg-foreground/90" asChild>
               <Link to="/auth">{user ? "Account" : "Sign In"}</Link>
             </Button>
             {!user && (
-              <Button asChild>
+              <Button className="bg-foreground text-primary hover:bg-foreground/90" asChild>
                 <Link to="/auth">Get Started</Link>
               </Button>
             )}
