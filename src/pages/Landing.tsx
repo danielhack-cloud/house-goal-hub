@@ -1,44 +1,15 @@
-import { useState } from "react";
 import { Link } from "react-router-dom";
 import { Button } from "@/components/ui/button";
-import { Input } from "@/components/ui/input";
 import { Card } from "@/components/ui/card";
 import { useAuth } from "@/contexts/AuthContext";
-import { supabase } from "@/integrations/supabase/client";
-import { useToast } from "@/hooks/use-toast";
 import {
   Home, ShoppingCart, Receipt, PiggyBank, ArrowRight,
-  CheckCircle2, Sparkles, Shield, TrendingUp, Users,
-  Star,
+  Sparkles, Shield, TrendingUp, Users,
+  Star, Handshake,
 } from "lucide-react";
 
 const Landing = () => {
   const { user } = useAuth();
-  const { toast } = useToast();
-  const [email, setEmail] = useState("");
-  const [submitting, setSubmitting] = useState(false);
-  const [joined, setJoined] = useState(false);
-
-  const handleWaitlist = async (e: React.FormEvent) => {
-    e.preventDefault();
-    if (!email) return;
-    setSubmitting(true);
-    const { error } = await supabase
-      .from("waitlist_signups")
-      .insert({ email: email.trim().toLowerCase() });
-    if (error) {
-      if (error.code === "23505") {
-        toast({ title: "You're already on the list!", description: "We'll be in touch soon." });
-        setJoined(true);
-      } else {
-        toast({ title: "Something went wrong", description: error.message, variant: "destructive" });
-      }
-    } else {
-      setJoined(true);
-      toast({ title: "You're on the list! 🎉", description: "We'll notify you when HomeDollars launches." });
-    }
-    setSubmitting(false);
-  };
 
   const steps = [
     { icon: ShoppingCart, title: "Shop Anywhere", description: "Shop at your favorite stores — online or in person. Every purchase counts." },
@@ -117,7 +88,7 @@ const Landing = () => {
               </Link>
             </Button>
             <Button size="lg" variant="outline" className="border-primary-foreground/30 text-primary-foreground hover:bg-primary-foreground/10" asChild>
-              <a href="#waitlist">Join Waiting List</a>
+              <Link to="/partners">Become a Partner</Link>
             </Button>
           </div>
         </div>
@@ -232,25 +203,15 @@ const Landing = () => {
         </div>
       </section>
 
-      {/* Waitlist */}
-      <section id="waitlist" className="py-20 bg-background">
-        <div className="mx-auto max-w-xl px-6 text-center">
-          <h2 className="font-heading text-3xl font-bold sm:text-4xl">Join the Waiting List</h2>
-          <p className="mt-3 text-muted-foreground">Be the first to know when HomeDollars launches. No spam, ever.</p>
-          {joined ? (
-            <div className="mt-10 flex flex-col items-center gap-3">
-              <CheckCircle2 className="h-12 w-12 text-[hsl(var(--success))]" />
-              <p className="font-heading text-xl font-semibold">You're on the list!</p>
-              <p className="text-sm text-muted-foreground">We'll send you an email when it's time to start earning.</p>
-            </div>
-          ) : (
-            <form onSubmit={handleWaitlist} className="mx-auto mt-10 flex max-w-md gap-3">
-              <Input type="email" placeholder="you@example.com" value={email} onChange={(e) => setEmail(e.target.value)} required className="flex-1" />
-              <Button type="submit" disabled={submitting}>
-                {submitting ? "Joining..." : "Sign Up"}
-              </Button>
-            </form>
-          )}
+      {/* Partner CTA */}
+      <section className="py-20 bg-primary/5">
+        <div className="mx-auto max-w-2xl px-6 text-center">
+          <Handshake className="mx-auto h-12 w-12 text-primary mb-4" />
+          <h2 className="font-heading text-3xl font-bold sm:text-4xl">Become a HomeDollars Partner</h2>
+          <p className="mt-3 text-muted-foreground">Accept HomeDollars at your business. Attract new customers, drive repeat visits, and help people achieve homeownership.</p>
+          <Button size="lg" className="mt-8" asChild>
+            <Link to="/partners">Learn More <ArrowRight className="ml-2 h-4 w-4" /></Link>
+          </Button>
         </div>
       </section>
 
