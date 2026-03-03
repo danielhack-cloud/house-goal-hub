@@ -2,6 +2,7 @@ import { useState } from "react";
 import { Link } from "react-router-dom";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
+import { Textarea } from "@/components/ui/textarea";
 import { Card } from "@/components/ui/card";
 import { useToast } from "@/hooks/use-toast";
 import { supabase } from "@/integrations/supabase/client";
@@ -32,6 +33,7 @@ const Partners = () => {
   const { toast } = useToast();
   const [email, setEmail] = useState("");
   const [bizName, setBizName] = useState("");
+  const [services, setServices] = useState("");
   const [submitting, setSubmitting] = useState(false);
   const [submitted, setSubmitted] = useState(false);
 
@@ -84,6 +86,30 @@ const Partners = () => {
         </div>
       </section>
 
+      {/* Application form - moved to top */}
+      <section className="py-20 bg-card border-b border-border">
+        <div className="mx-auto max-w-lg px-6 text-center">
+          <h2 className="font-heading text-3xl font-bold sm:text-4xl">Apply Now</h2>
+          <p className="mt-3 text-muted-foreground">Join our partner network — approval takes under 48 hours.</p>
+          {submitted ? (
+            <div className="mt-10 flex flex-col items-center gap-3">
+              <CheckCircle2 className="h-12 w-12 text-primary" />
+              <p className="font-heading text-xl font-semibold">Application Received!</p>
+              <p className="text-sm text-muted-foreground">We'll review your info and reach out within 48 hours.</p>
+            </div>
+          ) : (
+            <form onSubmit={handleSubmit} className="mt-10 space-y-3 text-left">
+              <Input placeholder="Business name" value={bizName} onChange={(e) => setBizName(e.target.value)} required />
+              <Input type="email" placeholder="Business email" value={email} onChange={(e) => setEmail(e.target.value)} required />
+              <Textarea placeholder="What services do you offer or what do you sell?" value={services} onChange={(e) => setServices(e.target.value)} rows={3} required />
+              <Button type="submit" className="w-full" size="lg" disabled={submitting}>
+                {submitting ? "Submitting..." : "Submit Partner Application"}
+              </Button>
+            </form>
+          )}
+        </div>
+      </section>
+
       {/* Benefits */}
       <section className="py-20">
         <div className="mx-auto max-w-6xl px-6">
@@ -123,29 +149,6 @@ const Partners = () => {
               </div>
             ))}
           </div>
-        </div>
-      </section>
-
-      {/* Application form */}
-      <section className="py-20">
-        <div className="mx-auto max-w-lg px-6 text-center">
-          <h2 className="font-heading text-3xl font-bold sm:text-4xl">Apply Now</h2>
-          <p className="mt-3 text-muted-foreground">Join our partner network — approval takes under 48 hours.</p>
-          {submitted ? (
-            <div className="mt-10 flex flex-col items-center gap-3">
-              <CheckCircle2 className="h-12 w-12 text-primary" />
-              <p className="font-heading text-xl font-semibold">Application Received!</p>
-              <p className="text-sm text-muted-foreground">We'll review your info and reach out within 48 hours.</p>
-            </div>
-          ) : (
-            <form onSubmit={handleSubmit} className="mt-10 space-y-3 text-left">
-              <Input placeholder="Business name" value={bizName} onChange={(e) => setBizName(e.target.value)} required />
-              <Input type="email" placeholder="Business email" value={email} onChange={(e) => setEmail(e.target.value)} required />
-              <Button type="submit" className="w-full" size="lg" disabled={submitting}>
-                {submitting ? "Submitting..." : "Submit Partner Application"}
-              </Button>
-            </form>
-          )}
         </div>
       </section>
 
