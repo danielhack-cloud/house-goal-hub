@@ -1,6 +1,6 @@
 import { Link, useLocation, useNavigate } from "react-router-dom";
 import { 
-  LayoutDashboard, Users, Briefcase, Mail, Handshake, Settings, Receipt, DollarSign, Activity, UserCircle, LogIn, LogOut
+  LayoutDashboard, Users, Briefcase, Handshake, Settings, Receipt, DollarSign, Activity, UserCircle, LogIn, LogOut
 } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { useAuth } from "@/contexts/AuthContext";
@@ -14,7 +14,7 @@ const navItems = [
   { icon: Users, label: "Members", path: "/members" },
   { icon: UserCircle, label: "Profile", path: "/members/1" },
   { icon: Briefcase, label: "Job Board", path: "/jobs" },
-  { icon: Mail, label: "Emails", path: "/emails" },
+  
   { icon: Handshake, label: "Partners", path: "/partners" },
   { icon: Settings, label: "Settings", path: "/settings" },
 ];
