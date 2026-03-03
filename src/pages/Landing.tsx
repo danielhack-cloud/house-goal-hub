@@ -79,7 +79,7 @@ const Landing = () => {
           </h1>
           <p className="mx-auto mt-6 max-w-2xl text-lg text-primary-foreground/80">
             Shop anywhere you normally do. Every dollar you spend earns HomeDollars
-            that count toward buying your first home.
+            that can be spent to buy or maintain your home.
           </p>
           <div className="mt-10 flex flex-col items-center gap-4 sm:flex-row sm:justify-center">
             <Button size="lg" asChild>
@@ -87,8 +87,8 @@ const Landing = () => {
                 Create Free Account <ArrowRight className="ml-2 h-4 w-4" />
               </Link>
             </Button>
-            <Button size="lg" variant="outline" className="border-primary-foreground/30 text-primary-foreground hover:bg-primary-foreground/10" asChild>
-              <Link to="/partners">Become a Partner</Link>
+            <Button size="lg" variant="secondary" className="bg-white text-foreground hover:bg-white/90 font-semibold" asChild>
+              <Link to="/partners">Become a Partner <ArrowRight className="ml-2 h-4 w-4" /></Link>
             </Button>
           </div>
         </div>
