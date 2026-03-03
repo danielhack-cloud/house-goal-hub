@@ -39,20 +39,20 @@ const Landing = () => {
   return (
     <div className="min-h-screen bg-background">
       {/* Nav */}
-      <header className="sticky top-0 z-50 border-b border-border bg-background/80 backdrop-blur-md">
+      <header className="sticky top-0 z-50 border-b border-border/20 bg-foreground/95 backdrop-blur-md">
         <div className="mx-auto flex h-16 max-w-6xl items-center justify-between px-6">
           <div className="flex items-center gap-2">
-            <img src="/images/homedollars-logo.png" alt="HomeDollars" className="h-8 mix-blend-multiply" />
+            <img src="/images/homedollars-logo.png" alt="HomeDollars" className="h-8 mix-blend-screen" />
           </div>
           <div className="flex items-center gap-3">
             {user && (
-              <Button variant="outline" asChild>
+              <Button variant="outline" className="border-background/20 text-background hover:bg-background/10" asChild>
                 <Link to="/track">
                   Dashboard <ArrowRight className="ml-2 h-4 w-4" />
                 </Link>
               </Button>
             )}
-            <Button variant="ghost" asChild>
+            <Button variant="ghost" className="text-background/70 hover:text-background hover:bg-background/10" asChild>
               <Link to="/auth">{user ? "Account" : "Sign In"}</Link>
             </Button>
             {!user && (
@@ -64,32 +64,58 @@ const Landing = () => {
         </div>
       </header>
 
-      {/* Hero */}
-      <section className="relative overflow-hidden">
-        <div className="absolute inset-0 bg-cover bg-center" style={{ backgroundImage: "url('/images/hero-home.webp')" }} />
-        <div className="absolute inset-0 bg-gradient-to-b from-foreground/75 via-foreground/65 to-background" />
-        <div className="relative mx-auto max-w-6xl px-6 py-24 text-center lg:py-36">
-          <div className="mb-6 inline-flex items-center gap-2 rounded-full border border-primary/40 bg-primary/20 px-4 py-1.5 text-sm font-medium text-primary-foreground">
-            <Sparkles className="h-4 w-4 text-primary" />
-            Launching Early 2026
-          </div>
-          <h1 className="mx-auto max-w-3xl font-heading text-4xl font-bold leading-tight text-primary-foreground sm:text-5xl lg:text-6xl">
-            Turn Your Everyday Shopping Into a{" "}
-            <span className="text-primary">Down Payment</span>
-          </h1>
-          <p className="mx-auto mt-6 max-w-2xl text-lg text-primary-foreground/80">
-            Shop anywhere you normally do. Every dollar you spend earns HomeDollars
-            that can be spent to buy or maintain your home.
-          </p>
-          <div className="mt-10 flex flex-col items-center gap-4 sm:flex-row sm:justify-center">
-            <Button size="lg" asChild>
-              <Link to="/auth">
-                Create Free Account <ArrowRight className="ml-2 h-4 w-4" />
-              </Link>
-            </Button>
-            <Button size="lg" variant="secondary" className="bg-white text-foreground hover:bg-white/90 font-semibold" asChild>
-              <Link to="/partners">Become a Partner <ArrowRight className="ml-2 h-4 w-4" /></Link>
-            </Button>
+      {/* Hero — dark, split layout like reference */}
+      <section className="relative bg-foreground overflow-hidden">
+        <div className="absolute inset-0 bg-gradient-to-br from-foreground via-foreground/95 to-primary/20" />
+        <div className="relative mx-auto max-w-6xl px-6 py-20 lg:py-32">
+          <div className="grid items-center gap-12 lg:grid-cols-2">
+            {/* Left — text */}
+            <div>
+              <div className="mb-6 inline-flex items-center gap-2 rounded-full border border-primary/40 bg-primary/20 px-4 py-1.5 text-sm font-medium text-primary">
+                <Sparkles className="h-4 w-4" />
+                Launching Early 2026
+              </div>
+              <h1 className="font-heading text-4xl font-bold leading-tight text-background sm:text-5xl lg:text-6xl">
+                Turn Your Everyday Shopping Into a{" "}
+                <span className="text-primary">Down Payment</span>
+              </h1>
+              <ul className="mt-8 space-y-4">
+                <li className="flex items-center gap-3 text-background/80 text-lg">
+                  <Home className="h-5 w-5 text-primary shrink-0" />
+                  Every $1 spent earns 1 HomeDollar
+                </li>
+                <li className="flex items-center gap-3 text-background/80 text-lg">
+                  <ShoppingCart className="h-5 w-5 text-primary shrink-0" />
+                  Shop at any store — online or in person
+                </li>
+                <li className="flex items-center gap-3 text-background/80 text-lg">
+                  <PiggyBank className="h-5 w-5 text-primary shrink-0" />
+                  HomeDollars go toward buying or maintaining your home
+                </li>
+                <li className="flex items-center gap-3 text-background/80 text-lg">
+                  <Receipt className="h-5 w-5 text-primary shrink-0" />
+                  AI-powered receipt scanning — snap and earn
+                </li>
+              </ul>
+              <div className="mt-10 flex flex-col gap-4 sm:flex-row">
+                <Button size="lg" className="text-base px-8 py-6" asChild>
+                  <Link to="/auth">
+                    Create Free Account <ArrowRight className="ml-2 h-4 w-4" />
+                  </Link>
+                </Button>
+                <Button size="lg" variant="outline" className="border-background/30 text-background hover:bg-background/10 text-base px-8 py-6" asChild>
+                  <Link to="/partners"><Handshake className="mr-2 h-4 w-4" /> Become a Partner</Link>
+                </Button>
+              </div>
+              <p className="mt-4 text-sm text-background/40">Join 10,000+ members saving toward homeownership</p>
+            </div>
+
+            {/* Right — image */}
+            <div className="relative">
+              <div className="overflow-hidden rounded-2xl border border-background/10 shadow-2xl shadow-primary/10">
+                <img src="/images/hero-home.webp" alt="Dream home" className="w-full h-auto object-cover aspect-[4/3]" loading="eager" />
+              </div>
+            </div>
           </div>
         </div>
       </section>
