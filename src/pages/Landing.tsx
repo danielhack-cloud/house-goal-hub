@@ -98,12 +98,12 @@ const Landing = () => {
                 </li>
               </ul>
               <div className="mt-10 flex flex-col gap-4 sm:flex-row">
-                <Button size="lg" className="text-base px-8 py-6" asChild>
+                <Button size="lg" className="text-base px-8 py-6 transition-transform hover:scale-105" asChild>
                   <Link to="/auth">
                     Create Free Account <ArrowRight className="ml-2 h-4 w-4" />
                   </Link>
                 </Button>
-                <Button size="lg" variant="outline" className="border-background/30 text-background hover:bg-background/10 text-base px-8 py-6" asChild>
+                <Button size="lg" variant="outline" className="border-background/50 text-background bg-background/10 text-base px-8 py-6 transition-transform hover:scale-105 hover:bg-background/15" asChild>
                   <Link to="/partners"><Handshake className="mr-2 h-4 w-4" /> Become a Partner</Link>
                 </Button>
               </div>
