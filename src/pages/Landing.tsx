@@ -111,9 +111,9 @@ const Landing = () => {
             </div>
 
             {/* Right — image */}
-            <div className="relative">
-              <div className="overflow-hidden rounded-2xl border border-background/10 shadow-2xl shadow-primary/10">
-                <img src="/images/hero-home.webp" alt="Dream home" className="w-full h-auto object-cover aspect-[4/3]" loading="eager" />
+            <div className="relative flex items-center justify-center">
+              <div className="overflow-hidden rounded-2xl border border-background/10 shadow-2xl shadow-primary/10 w-full">
+                <img src="/images/hero-home.webp" alt="Dream home" className="w-full h-auto object-cover aspect-[3/4] lg:aspect-square" loading="eager" />
               </div>
             </div>
           </div>
