@@ -1,6 +1,6 @@
 import DashboardLayout from "@/components/DashboardLayout";
 import MetricCard from "@/components/MetricCard";
-import { DollarSign, ShoppingCart, Home, TrendingUp } from "lucide-react";
+import { DollarSign, ShoppingCart, TrendingUp } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
 import { Progress } from "@/components/ui/progress";
@@ -41,11 +41,10 @@ const Index = () => {
         </Button>
       </div>
 
-      <div className="grid gap-4 grid-cols-2 lg:grid-cols-4">
+      <div className="grid gap-4 grid-cols-2 lg:grid-cols-3">
         <MetricCard title="HomeDollars Balance" value={`HD ${totalHD.toLocaleString()}`} change="+539 this month" changeType="positive" icon={DollarSign} />
         <MetricCard title="Lifetime Spending" value="$2,847" change="+$539 this month" changeType="positive" icon={ShoppingCart} />
         <MetricCard title="Transactions" value="34" change="5 this month" changeType="positive" icon={TrendingUp} />
-        <MetricCard title="Current Tier" value="Builder" change="2,153 HD to Foundation" changeType="neutral" icon={Home} />
       </div>
 
       <Card className="mt-6 md:mt-8 p-4 md:p-6">

@@ -18,6 +18,9 @@ import Capture from "./pages/Capture";
 import Spend from "./pages/Spend";
 import Partners from "./pages/Partners";
 import Settings from "./pages/Settings";
+import Onboarding from "./pages/Onboarding";
+import Referrals from "./pages/Referrals";
+import Family from "./pages/Family";
 import NotFound from "./pages/NotFound";
 
 const queryClient = new QueryClient();
@@ -44,6 +47,9 @@ const App = () => (
             <Route path="/spend" element={<Spend />} />
             <Route path="/partners" element={<Partners />} />
             <Route path="/settings" element={<Settings />} />
+            <Route path="/onboarding" element={<Onboarding />} />
+            <Route path="/referrals" element={<Referrals />} />
+            <Route path="/family" element={<Family />} />
             <Route path="*" element={<NotFound />} />
           </Routes>
         </BrowserRouter>
