@@ -14,6 +14,53 @@ export type Database = {
   }
   public: {
     Tables: {
+      family_submissions: {
+        Row: {
+          category_id: string | null
+          created_at: string
+          family_member_name: string
+          hd_earned: number
+          id: string
+          is_primary: boolean
+          month: string
+          order_date: string
+          order_total: number
+          user_id: string
+        }
+        Insert: {
+          category_id?: string | null
+          created_at?: string
+          family_member_name: string
+          hd_earned?: number
+          id?: string
+          is_primary?: boolean
+          month: string
+          order_date: string
+          order_total: number
+          user_id: string
+        }
+        Update: {
+          category_id?: string | null
+          created_at?: string
+          family_member_name?: string
+          hd_earned?: number
+          id?: string
+          is_primary?: boolean
+          month?: string
+          order_date?: string
+          order_total?: number
+          user_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "family_submissions_category_id_fkey"
+            columns: ["category_id"]
+            isOneToOne: false
+            referencedRelation: "spending_categories"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       feed_posts: {
         Row: {
           content: string
@@ -41,28 +88,64 @@ export type Database = {
         }
         Relationships: []
       }
+      hd_transfers: {
+        Row: {
+          amount: number
+          created_at: string
+          from_user_id: string
+          id: string
+          to_user_id: string
+        }
+        Insert: {
+          amount: number
+          created_at?: string
+          from_user_id: string
+          id?: string
+          to_user_id: string
+        }
+        Update: {
+          amount?: number
+          created_at?: string
+          from_user_id?: string
+          id?: string
+          to_user_id?: string
+        }
+        Relationships: []
+      }
       profiles: {
         Row: {
+          age_range: string | null
           avatar_url: string | null
           created_at: string
           display_name: string
+          geographic_location: string | null
+          housing_status: string | null
           id: string
+          onboarding_completed: boolean
           updated_at: string
           user_id: string
         }
         Insert: {
+          age_range?: string | null
           avatar_url?: string | null
           created_at?: string
           display_name?: string
+          geographic_location?: string | null
+          housing_status?: string | null
           id?: string
+          onboarding_completed?: boolean
           updated_at?: string
           user_id: string
         }
         Update: {
+          age_range?: string | null
           avatar_url?: string | null
           created_at?: string
           display_name?: string
+          geographic_location?: string | null
+          housing_status?: string | null
           id?: string
+          onboarding_completed?: boolean
           updated_at?: string
           user_id?: string
         }
@@ -92,14 +175,61 @@ export type Database = {
         }
         Relationships: []
       }
+      referrals: {
+        Row: {
+          created_at: string
+          id: string
+          referred_email: string
+          referred_user_id: string | null
+          referrer_id: string
+          status: string
+        }
+        Insert: {
+          created_at?: string
+          id?: string
+          referred_email: string
+          referred_user_id?: string | null
+          referrer_id: string
+          status?: string
+        }
+        Update: {
+          created_at?: string
+          id?: string
+          referred_email?: string
+          referred_user_id?: string | null
+          referrer_id?: string
+          status?: string
+        }
+        Relationships: []
+      }
+      spending_categories: {
+        Row: {
+          id: string
+          is_primary: boolean
+          name: string
+        }
+        Insert: {
+          id?: string
+          is_primary?: boolean
+          name: string
+        }
+        Update: {
+          id?: string
+          is_primary?: boolean
+          name?: string
+        }
+        Relationships: []
+      }
       transactions: {
         Row: {
+          category_id: string | null
           created_at: string
           hd_earned: number
           id: string
           order_date: string
           order_id: string | null
           order_total: number
+          receipt_hash: string | null
           receipt_url: string | null
           source: string
           status: string
@@ -107,12 +237,14 @@ export type Database = {
           user_id: string
         }
         Insert: {
+          category_id?: string | null
           created_at?: string
           hd_earned: number
           id?: string
           order_date: string
           order_id?: string | null
           order_total: number
+          receipt_hash?: string | null
           receipt_url?: string | null
           source?: string
           status?: string
@@ -120,19 +252,61 @@ export type Database = {
           user_id: string
         }
         Update: {
+          category_id?: string | null
           created_at?: string
           hd_earned?: number
           id?: string
           order_date?: string
           order_id?: string | null
           order_total?: number
+          receipt_hash?: string | null
           receipt_url?: string | null
           source?: string
           status?: string
           updated_at?: string
           user_id?: string
         }
-        Relationships: []
+        Relationships: [
+          {
+            foreignKeyName: "transactions_category_id_fkey"
+            columns: ["category_id"]
+            isOneToOne: false
+            referencedRelation: "spending_categories"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      user_primary_categories: {
+        Row: {
+          category_id: string
+          created_at: string
+          id: string
+          monthly_amount: number
+          user_id: string
+        }
+        Insert: {
+          category_id: string
+          created_at?: string
+          id?: string
+          monthly_amount?: number
+          user_id: string
+        }
+        Update: {
+          category_id?: string
+          created_at?: string
+          id?: string
+          monthly_amount?: number
+          user_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "user_primary_categories_category_id_fkey"
+            columns: ["category_id"]
+            isOneToOne: false
+            referencedRelation: "spending_categories"
+            referencedColumns: ["id"]
+          },
+        ]
       }
       waitlist_signups: {
         Row: {

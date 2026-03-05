@@ -30,9 +30,9 @@ const Capture = () => {
   const [orderDate, setOrderDate] = useState("");
   const [orderTotal, setOrderTotal] = useState("");
   const [orderId, setOrderId] = useState("");
+  const [receiptHash, setReceiptHash] = useState("");
   const [autoSubmitPending, setAutoSubmitPending] = useState(false);
 
-  // Quick stats
   const { data: recentCount = 0 } = useQuery({
     queryKey: ["tx-count", user?.id],
     queryFn: async () => {
@@ -91,6 +91,7 @@ const Capture = () => {
       if (data.orderDate) setOrderDate(data.orderDate);
       if (data.orderTotal) setOrderTotal(data.orderTotal);
       if (data.orderId) setOrderId(data.orderId);
+      if (data.receiptHash) setReceiptHash(data.receiptHash);
       if (data.orderDate && data.orderTotal && Number(data.orderTotal) > 0) {
         setAutoSubmitPending(true);
       } else {
@@ -121,15 +122,21 @@ const Capture = () => {
         user_id: user.id, order_date: orderDate, order_total: total,
         hd_earned: hdEarned, order_id: orderId || null,
         source: "receipt", status: "pending", receipt_url: receiptUrl,
-      });
-      if (error) throw error;
+        receipt_hash: receiptHash || null,
+      } as any);
+      if (error) {
+        if (error.code === "23505" && error.message?.includes("receipt_hash")) {
+          throw new Error("This receipt has already been submitted.");
+        }
+        throw error;
+      }
     },
     onSuccess: () => {
       const total = Number(orderTotal);
       setCelebrationData({ total, hd: Math.floor(total) });
       queryClient.invalidateQueries({ queryKey: ["transactions"] });
       queryClient.invalidateQueries({ queryKey: ["tx-count"] });
-      setOrderDate(""); setOrderTotal(""); setOrderId("");
+      setOrderDate(""); setOrderTotal(""); setOrderId(""); setReceiptHash("");
       setReceiptFile(null);
     },
     onError: (err: any) => {
@@ -154,7 +161,6 @@ const Capture = () => {
           Snap a photo and we'll auto-track your HomeDollars
         </p>
 
-        {/* Camera button */}
         <button
           onClick={handleCameraCapture}
           disabled={isProcessing}
@@ -177,7 +183,6 @@ const Capture = () => {
           </p>
         )}
 
-        {/* Receipt preview */}
         {receiptFile && !isProcessing && (
           <div className="mt-4 flex items-center gap-3 rounded-lg border bg-muted/50 p-3">
             <img
@@ -205,7 +210,6 @@ const Capture = () => {
         />
       </div>
 
-      {/* Tips section */}
       <div className="mt-2 space-y-2 px-2">
         {tips.map((tip, i) => {
           const Icon = tip.icon;
@@ -220,7 +224,6 @@ const Capture = () => {
         })}
       </div>
 
-      {/* Celebration dialog */}
       <Dialog open={!!celebrationData} onOpenChange={() => setCelebrationData(null)}>
         <DialogContent className="text-center max-w-sm mx-auto">
           <DialogHeader>

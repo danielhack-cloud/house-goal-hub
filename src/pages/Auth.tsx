@@ -14,7 +14,21 @@ const Auth = () => {
   const navigate = useNavigate();
 
   useEffect(() => {
-    if (user) navigate("/dashboard", { replace: true });
+    if (!user) return;
+    // Check if onboarding is completed
+    const checkOnboarding = async () => {
+      const { data } = await supabase
+        .from("profiles")
+        .select("onboarding_completed")
+        .eq("user_id", user.id)
+        .single();
+      if (data && !(data as any).onboarding_completed) {
+        navigate("/onboarding", { replace: true });
+      } else {
+        navigate("/dashboard", { replace: true });
+      }
+    };
+    checkOnboarding();
   }, [user, navigate]);
   const [isLogin, setIsLogin] = useState(true);
   const [email, setEmail] = useState("");
