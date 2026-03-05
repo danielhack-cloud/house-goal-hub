@@ -1,10 +1,12 @@
 import { useLocation, useNavigate } from "react-router-dom";
-import { LayoutDashboard, Camera, Home } from "lucide-react";
+import { LayoutDashboard, Camera, Home, Gift, UsersRound } from "lucide-react";
 import { cn } from "@/lib/utils";
 
 const tabs = [
   { path: "/track", label: "Track", icon: LayoutDashboard },
+  { path: "/referrals", label: "Refer", icon: Gift },
   { path: "/capture", label: "Capture", icon: Camera, center: true },
+  { path: "/family", label: "Family", icon: UsersRound },
   { path: "/spend", label: "Spend", icon: Home },
 ];
 
@@ -17,7 +19,7 @@ const BottomNav = () => {
       className="fixed bottom-0 left-0 right-0 z-50 border-t bg-card shadow-[0_-2px_10px_rgba(0,0,0,0.06)]"
       style={{ paddingBottom: "env(safe-area-inset-bottom)" }}
     >
-      <div className="flex items-end justify-around h-16 px-2">
+      <div className="flex items-end justify-around h-16 px-1">
         {tabs.map((tab) => {
           const active = location.pathname === tab.path;
           const Icon = tab.icon;
