@@ -57,8 +57,8 @@ const AppSidebar = ({ onNavigate }: AppSidebarProps) => {
         })}
       </nav>
 
-      <div className="border-t border-sidebar-border p-4 space-y-3"
-        style={{ paddingBottom: "calc(env(safe-area-inset-bottom) + 1rem)" }}
+      <div className="border-t border-sidebar-border px-4 py-3 space-y-2"
+        style={{ paddingBottom: "calc(env(safe-area-inset-bottom) + 0.5rem)" }}
       >
         {user ? (
           <div className="space-y-2">
