@@ -111,7 +111,7 @@ const Onboarding = () => {
   ];
 
   return (
-    <div className="flex min-h-screen items-center justify-center bg-background p-4">
+    <div className="flex min-h-screen items-center justify-center bg-background p-4" style={{ paddingTop: "env(safe-area-inset-top)" }}>
       <Card className="w-full max-w-md p-8">
         <div className="mb-6 flex items-center justify-center gap-2">
           <Home className="h-7 w-7 text-primary" />
