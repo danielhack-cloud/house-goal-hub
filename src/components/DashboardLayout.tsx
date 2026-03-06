@@ -37,7 +37,10 @@ const DashboardLayout = ({ children }: { children: ReactNode }) => {
             <div className="fixed inset-0 z-[100]" onClick={() => setDrawerOpen(false)}>
               <div className="absolute inset-0 bg-black/50" />
               <div
-                className="absolute left-0 top-0 bottom-0 w-64 animate-in slide-in-from-left duration-200"
+                className="absolute left-0 top-0 w-64 animate-in slide-in-from-left duration-200 flex flex-col"
+                style={{
+                  bottom: "env(safe-area-inset-bottom)",
+                }}
                 onClick={(e) => e.stopPropagation()}
               >
                 <div className="flex items-center justify-between border-b bg-card px-4 py-3"
